@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.Dto.ApiResponse;
 import com.app.Dto.CustomerDto;
+import com.app.Dto.User;
 import com.app.Service.CustomerService;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,6 +53,15 @@ public class CustomerController {
        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
        .body(new ApiResponse("Some error occured"));
     }
+   }
+
+   public  ResponseEntity<?> listAllCustomers()
+   {
+      try {
+          
+      } catch (Exception e) {
+         // TODO: handle exception
+      }
    }
  
 

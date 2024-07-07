@@ -30,7 +30,13 @@ public class CustomerServiceImpl implements CustomerService{
     public ApiResponse setPin(User user) {
        
         Customer customer = custRep.findById(user.getId())
-        .orElseThrow(new ResourceNotFoundException("Customer not found"));
+        .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+
+        customer.setPin(user.getPin());
+
+        custRep.save(customer);
+
+        return new ApiResponse("New Pin is Set");
 
     }
 }
