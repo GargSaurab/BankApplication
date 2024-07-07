@@ -61,7 +61,7 @@ public class TransactionController {
 
     }
 
-    @GetMapping("/trasactions")
+    @GetMapping("/transactions")
     public ResponseEntity<?> getMethodName(@RequestParam int id) {
         
     try
@@ -77,7 +77,7 @@ public class TransactionController {
     
     @PutMapping("transfer")
     public ResponseEntity<?> transfer(@RequestBody User user) {
-        
+        System.out.println(user);
         try {
             trscSrv.deposit(user);
             ApiResponse response = new ApiResponse(user.getAmount() + "transfered");

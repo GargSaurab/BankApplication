@@ -32,6 +32,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     public ModelMapper mapper;
 
+    // Withdraw's the money out
     @Override
     public void withdraw(User user) {
 
@@ -66,6 +67,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     }
 
+    // Deposits the money in 
     @Override
     public void deposit(User user) {
 
@@ -92,6 +94,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     }
 
+    // lists all the transactions made by each id
     @Override
     public List<TransactionDto> listAllTransactions(int id) {
 
@@ -106,52 +109,50 @@ public class TransactionServiceImpl implements TransactionService {
 
     }
 
+    // transfers money from one customer to another
     @Override
     public void transfer(User user) {
 
         // fetching data of the sender
         Customer sender = custRep.findById(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("sender not  found")); 
+                .orElseThrow(() -> new ResourceNotFoundException("sender not found")); 
 
         // fetching data of the recepient        
-        Customer recepient = custRep.findById(user.getOtherId())
-        .orElseThrow(() -> new ResourceNotFoundException("recepient not  found")); 
-
+        Customer recipient = custRep.findById(user.getOtherId())
+        .orElseThrow(() -> new ResourceNotFoundException("recepient not found")); 
 
         // checks pin given by user
         if (sender.getPin() != (user.getPin())) {
             throw new InvalidInputException("Invalid Pin");
         }
 
-        double sBalance = sender.getBalance();
-        double rBalance = recepient.getBalance();
+        double senderBalance = sender.getBalance();
+        double recipientBalance = recipient.getBalance();
         double amount = user.getAmount();
 
         // checking if balanace is sufficient or not
-        if (sBalance < amount) {
+        if (senderBalance < amount) {
             throw new InvalidInputException("Insufficient Balance");
         }
 
-        // updating balance and saving the updated dat of both sender and recepient
-        recepient.setBalance(sBalance - amount);
-
-        custRep.save(recepient);
-
-        recepient.setBalance(rBalance + amount);
-
-        custRep.save(recepient);
-
+        // updating balance and saving the updated dat of both sender and recipient
+        sender.setBalance(senderBalance - amount);
+        recipient.setBalance(recipientBalance + amount);
+        
+        System.out.println(sender);
+        
+        custRep.save(sender);
+        custRep.save(recipient);
+        
         // logging the new transaction
-        Transaction transaction1 = new Transaction(user.getAmount(),TrscType.TRANSFER_CREDIT,sender,recepient);
+        Transaction transaction1 = new Transaction(user.getAmount(),TrscType.TRANSFER_CREDIT,sender,recipient);
 
         trscRep.save(transaction1);
       
-        Transaction transaction2 = new Transaction(user.getAmount(),TrscType.TRANSFER_DEBIT,recepient,sender);
+        Transaction transaction2 = new Transaction(user.getAmount(),TrscType.TRANSFER_DEBIT,recipient,sender);
 
         trscRep.save(transaction2);
 
-        
-        
     }
 
 }

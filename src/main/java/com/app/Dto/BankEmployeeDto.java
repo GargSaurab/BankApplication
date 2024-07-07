@@ -9,6 +9,6 @@ public class BankEmployeeDto {
 
     private int empId;
     private String name;
-    private String post;
+    private JobTitleDto jobTitle;
 
 }

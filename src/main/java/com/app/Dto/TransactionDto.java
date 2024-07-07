@@ -2,7 +2,7 @@ package com.app.Dto;
 
 import java.time.LocalDateTime;
 
-import com.app.Dto.TrscType;
+import com.app.Entity.Customer;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,9 +10,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class TransactionDto {
-   
-    private int trscId;
-    private LocalDateTime time;
-    private TrscType type;
 
+    private int trscId;
+    private double amount;
+    private LocalDateTime time;
+    private TrscTypeDto type;
+    public Customer customer;
+    public Customer from_To;
 }

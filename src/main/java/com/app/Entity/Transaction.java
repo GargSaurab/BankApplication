@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,11 +27,11 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private TrscType type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "Customer_id")
     public Customer customer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "from_to_id")
     public Customer from_To;
 
@@ -43,6 +42,7 @@ public class Transaction {
         this.type = type;
         this.customer = customer;
         this.from_To = from_To;
+        this.customer.addTransaction(this);
     }
 
 }
