@@ -12,4 +12,10 @@ public class User {
     private int otherId;
     private double  amount;
 
+    public User(int id, int pin)// constructor created for reseting the pin, for which we only need id and pin
+    {
+        this.id = id;
+        this.pin = pin;
+    }
+
 }

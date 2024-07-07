@@ -60,9 +60,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         
         // Loging the transaction
-        Transaction newTransaction = new Transaction(user.getAmount(),TrscType.WITHDRAWAL,customer)
+        Transaction newTransaction = new Transaction(user.getAmount(),TrscType.WITHDRAWAL,customer,null);
 
-        trscSrv.save(newTransaction);
+        trscRep.save(newTransaction);
 
     }
 
@@ -86,9 +86,9 @@ public class TransactionServiceImpl implements TransactionService {
 
 
         // Loging the transaction
-        Transaction newTransaction = new Transaction(user.getAmount(),TrscType.DEPOSIT,customer)
+        Transaction newTransaction = new Transaction(user.getAmount(),TrscType.DEPOSIT,customer,null);
 
-        trscSrv.save(newTransaction);
+        trscRep.save(newTransaction);
 
     }
 
@@ -142,9 +142,16 @@ public class TransactionServiceImpl implements TransactionService {
         custRep.save(recepient);
 
         // logging the new transaction
-        Transaction newTransaction = new Transaction(user.getAmount(),TrscType.TRANSFER,customer)
+        Transaction transaction1 = new Transaction(user.getAmount(),TrscType.TRANSFER_CREDIT,sender,recepient);
 
-        trscSrv.save(newTransaction);
+        trscRep.save(transaction1);
+      
+        Transaction transaction2 = new Transaction(user.getAmount(),TrscType.TRANSFER_DEBIT,recepient,sender);
+
+        trscRep.save(transaction2);
+
+        
+        
     }
 
 }
