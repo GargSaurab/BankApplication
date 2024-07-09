@@ -1,6 +1,7 @@
 package com.app.ExceptionHandler;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,10 +24,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidInputException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ApiResponse handlerResourceNotFoundException(InvalidInputException e)
+    public ApiResponse handlerInvalidInputException(InvalidInputException e)
     {
         System.out.println("Invalid input in" + e);
         return new ApiResponse( e.getMessage());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ApiResponse HandlerBadCredentialsException(BadCredentialsException e) {
+         return new ApiResponse("An unexpected error occurred: " + e.getMessage());
     }
 
 }

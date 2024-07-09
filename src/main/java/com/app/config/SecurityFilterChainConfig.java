@@ -24,7 +24,9 @@ public class SecurityFilterChainConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
          http.csrf(csrf -> csrf.disable())
              .authorizeHttpRequests( request ->
-             request.requestMatchers("/").permitAll()
+             request.requestMatchers("/auth/login").permitAll()
+             .requestMatchers("/transaction").hasRole("CUST")
+             .requestMatchers("/employee").hasRole("EMP")
              .anyRequest()
              .authenticated()
              ).exceptionHandling(ex -> ex.authenticationEntryPoint(point))
