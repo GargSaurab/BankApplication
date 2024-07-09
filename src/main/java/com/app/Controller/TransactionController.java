@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.CustomException.InvalidInputException;
 import com.app.CustomException.ResourceNotFoundException;
 import com.app.Dto.ApiResponse;
+import com.app.Dto.CustomApiResponse;
+import com.app.Dto.ResponseInfo;
 import com.app.Dto.TransactionDto;
 import com.app.Dto.User;
 import com.app.Service.TransactionService;
@@ -70,8 +72,11 @@ public class TransactionController {
         
     try
         { 
-            List<TransactionDto> trnasacitons = trscSrv.listAllTransactions(id);
-            return ResponseEntity.status(HttpStatus.OK).body(trnasacitons);
+            List<TransactionDto> transactions = trscSrv.listAllTransactions(id);
+
+            ResponseInfo info = new ResponseInfo(201, "Data_Retrieved");
+            CustomApiResponse<List<TransactionDto>> response = new CustomApiResponse<>(info, transactions);
+            return ResponseEntity.ok(response);
         }
        catch(ResourceNotFoundException re)
        {

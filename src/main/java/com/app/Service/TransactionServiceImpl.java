@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
     public ModelMapper mapper;
+
+    private Logger logger = LoggerFactory.getLogger(TransactionServiceImpl.class);
 
     // Withdraw's the money out
     @Override
@@ -139,7 +143,7 @@ public class TransactionServiceImpl implements TransactionService {
         sender.setBalance(senderBalance - amount);
         recipient.setBalance(recipientBalance + amount);
         
-        System.out.println(sender);
+        logger.info("Sender" + senderBalance);
         
         custRep.save(sender);
         custRep.save(recipient);
