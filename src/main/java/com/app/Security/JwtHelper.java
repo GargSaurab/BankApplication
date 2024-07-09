@@ -42,6 +42,7 @@ public class JwtHelper {
          return  claimsResolver.apply(claims);
      }
 
+    // retrieve all claims from the token
      private Claims getAllClaimsFromToken(String token)
      {
         return Jwts.parserBuilder().setSigningKey(jwtSecret)
