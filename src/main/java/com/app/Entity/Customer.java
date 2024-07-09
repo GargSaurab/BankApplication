@@ -2,12 +2,12 @@ package com.app.Entity;
 
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import org.springframework.data.annotation.Id;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -23,11 +23,13 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int custId;
     private String name;
+    private String password;
     private double balance;
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private int pin;
     private String address;
+    public String role;
 
     @OneToMany(mappedBy = "customer")
     private List<Transaction> transactions;

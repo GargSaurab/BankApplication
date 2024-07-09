@@ -15,7 +15,10 @@ import com.app.Dto.CustomerDto;
 import com.app.Dto.User;
 import com.app.Entity.Customer;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class CustomerServiceImpl implements CustomerService{
     
     @Autowired

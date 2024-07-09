@@ -18,7 +18,6 @@ import com.app.Dto.ApiResponse;
 import com.app.Dto.TransactionDto;
 import com.app.Dto.User;
 import com.app.Service.TransactionService;
-import org.springframework.web.bind.annotation.PathVariable;
 
 
 
@@ -31,6 +30,7 @@ public class TransactionController {
     private TransactionService trscSrv;
 
     // using json to get the data securely from the user
+    //Withdraw's money
     @PutMapping("/withdraw")
     public ResponseEntity<?> withdraw(@RequestBody User user) {
 
@@ -46,6 +46,7 @@ public class TransactionController {
 
     }
 
+    // Deposits money
     @PutMapping("/deposit")
        public ResponseEntity<?> deposit(@RequestBody User user) {
 
@@ -61,8 +62,9 @@ public class TransactionController {
 
     }
 
+   // returns list off all transactions done by a customer
     @GetMapping("/transactions")
-    public ResponseEntity<?> getMethodName(@RequestParam int id) {
+    public ResponseEntity<?> listAllTransactions(@RequestParam int id) {
         
     try
         { 
@@ -75,6 +77,7 @@ public class TransactionController {
        } 
     }
     
+    //  performs money transfer between accounts
     @PutMapping("transfer")
     public ResponseEntity<?> transfer(@RequestBody User user) {
         System.out.println(user);
