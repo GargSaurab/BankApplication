@@ -26,13 +26,16 @@ import jakarta.transaction.Transactional;
 public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
-    public TransactionRepo trscRep;
+    private TransactionRepo trscRep;
 
     @Autowired
-    public CustomerRepo custRep;
+    private CustomerRepo custRep;
 
     @Autowired
-    public ModelMapper mapper;
+    private TransactionServiceHelper helper;
+
+    @Autowired
+    private ModelMapper mapper;
 
     private Logger logger = LoggerFactory.getLogger(TransactionServiceImpl.class);
 
@@ -118,44 +121,23 @@ public class TransactionServiceImpl implements TransactionService {
     public void transfer(User user) {
 
         // fetching data of the sender
-        Customer sender = custRep.findById(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("sender not found")); 
+        Customer sender = helper.getCustomer(user.getId());
 
-        // fetching data of the recepient        
-        Customer recipient = custRep.findById(user.getOtherId())
-        .orElseThrow(() -> new ResourceNotFoundException("recepient not found")); 
-
+        logger.info(sender.toString());
+        
         // checks pin given by user
         if (sender.getPin() != (user.getPin())) {
             throw new InvalidInputException("Invalid Pin");
         }
-
-        double senderBalance = sender.getBalance();
-        double recipientBalance = recipient.getBalance();
-        double amount = user.getAmount();
-
-        // checking if balanace is sufficient or not
-        if (senderBalance < amount) {
-            throw new InvalidInputException("Insufficient Balance");
-        }
-
-        // updating balance and saving the updated dat of both sender and recipient
-        sender.setBalance(senderBalance - amount);
-        recipient.setBalance(recipientBalance + amount);
         
-        logger.info("Sender" + senderBalance);
+        helper.withdraw(sender, user.getAmount());
         
-        custRep.save(sender);
-        custRep.save(recipient);
+        Customer recipient = helper.getCustomer(user.getOtherId());
         
-        // logging the new transaction
-        Transaction transaction1 = new Transaction(user.getAmount(),TrscType.TRANSFER_CREDIT,sender,recipient);
+        logger.info(recipient.toString());
 
-        trscRep.save(transaction1);
-      
-        Transaction transaction2 = new Transaction(user.getAmount(),TrscType.TRANSFER_DEBIT,recipient,sender);
-
-        trscRep.save(transaction2);
+        helper.deposit(recipient, user.getAmount());
+        
 
     }
 
