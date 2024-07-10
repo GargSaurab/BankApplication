@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     {
         System.out.println("Resource not found in" + e);
 
-        ResponseInfo info = new ResponseInfo(500, "Server error");
+        ResponseInfo info = new ResponseInfo(info.success, "Server error");
         CustomApiResponse<?> response = new CustomApiResponse<>(info, null);
         return ResponseEntity.ok(response);
     }

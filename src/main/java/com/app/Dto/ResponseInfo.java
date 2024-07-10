@@ -5,9 +5,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ResponseInfo {
-    
-    private int status;
+public class ResponseInfo extends Status{
+
     private String message;
 
 }
