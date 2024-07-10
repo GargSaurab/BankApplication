@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.CustomException.InvalidInputException;
 import com.app.CustomException.ResourceNotFoundException;
 import com.app.Dto.ApiResponse;
-import com.app.Dto.CustomApiResponse;
-import com.app.Dto.ResponseInfo;
+import com.app.Dto.CommonResponse;
+import com.app.Dto.StatusCode;
 import com.app.Dto.TransactionDto;
 import com.app.Dto.User;
 import com.app.Service.TransactionService;
@@ -70,18 +70,25 @@ public class TransactionController {
     @GetMapping("/transactions")
     public ResponseEntity<?> listAllTransactions(@RequestParam int id) {
         
+       CommonResponse response = new CommonResponse();
+
     try
         { 
             List<TransactionDto> transactions = trscSrv.listAllTransactions(id);
 
-            ResponseInfo info = new ResponseInfo(201, "Data_Retrieved");
-            CustomApiResponse<List<TransactionDto>> response = new CustomApiResponse<>(info, transactions);
-            return ResponseEntity.ok(response);
+          response.info.code = StatusCode.Success;
+          response.info.message = "Success";
+          response.data = transactions;
+  
         }
        catch(ResourceNotFoundException re)
        {
-          throw re;
+        //   throw re;
+          response.info.code = StatusCode.server_Error;
+          response.info.message = "Exception Occured!";
        } 
+
+       return ResponseEntity.ok(response);
     }
     
     //  performs money transfer between accounts
