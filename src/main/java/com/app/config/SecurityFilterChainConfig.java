@@ -10,7 +10,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.app.Security.JWTAuthenticationEntryPoint;
-import com.app.Security.JWTAuthenticationFilter;
+import com.app.filter.JWTAuthenticationFilter;
+import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 
 @Configuration
 @EnableMethodSecurity
@@ -21,6 +22,23 @@ public class SecurityFilterChainConfig {
     
     @Autowired
     private JWTAuthenticationFilter filter;
+
+    //Configuring a filter for setting up Content Security Policy(CSP), it's an added layer of security that helps migitate XSS and data injection attacks.
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
+    {
+        http.headers(headers ->
+                //Configure XSS protection header
+                headers.xssProtection(
+                        xss ->
+                                xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)
+                ).contentSecurityPolicy(
+                        //Configure CSP to allow scripts only form 'self'
+                        cps -> cps.policyDirectives("script-src 'self")
+                ));
+
+        return http.build();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
@@ -34,7 +52,7 @@ public class SecurityFilterChainConfig {
              ).exceptionHandling(ex -> ex.authenticationEntryPoint(point))
              .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-             // sets this filterchain before Authentication filter
+             // setting Authentication filter before
              http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
 
              return http.build();
