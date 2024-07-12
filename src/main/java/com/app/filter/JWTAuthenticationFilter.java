@@ -1,7 +1,8 @@
-package com.app.Security;
+package com.app.filter;
 
 import java.io.IOException;
 
+import com.app.Security.JwtHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +86,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
               }
         }
 
-        // is called to pass control to the next filter in the, if not present then to the resource itself
+        // is called to pass control to the next filter in the line, if not present then to the resource itself
         filterChain.doFilter(request, response);
 
     }
