@@ -22,8 +22,6 @@ import com.app.Dto.TransactionDto;
 import com.app.Dto.User;
 import com.app.Service.TransactionService;
 
-
-
 @RestController
 @RequestMapping("/transaction")
 // @CrossOrigin()
@@ -33,7 +31,7 @@ public class TransactionController {
     private TransactionService trscSrv;
 
     // using json to get the data securely from the user
-    //Withdraw's money
+    // Withdraw's money
     @PutMapping("/withdraw")
     public ResponseEntity<?> withdraw(@RequestBody User user) {
 
@@ -51,7 +49,7 @@ public class TransactionController {
 
     // Deposits money
     @PutMapping("/deposit")
-       public ResponseEntity<?> deposit(@RequestBody User user) {
+    public ResponseEntity<?> deposit(@RequestBody User user) {
 
         try {
             trscSrv.deposit(user);
@@ -65,33 +63,28 @@ public class TransactionController {
 
     }
 
-   // returns list off all transactions done by a customer
+    // returns list off all transactions done by a customer
     @PreAuthorize("hasRole('EMP')")
     @GetMapping("/transactions")
     public ResponseEntity<?> listAllTransactions(@RequestParam int id) {
-        
-       CommonResponse response = new CommonResponse();
 
-    try
-        { 
+        CommonResponse response = new CommonResponse();
+
+        try {
             List<TransactionDto> transactions = trscSrv.listAllTransactions(id);
 
-          response.info.code = StatusCode.Success;
-          response.info.message = "Success";
-          response.data = transactions;
-  
-        }
-       catch(ResourceNotFoundException re)
-       {
-        //   throw re;
-          response.info.code = StatusCode.server_Error;
-          response.info.message = "Exception Occured!";
-       } 
+            response.info.code = StatusCode.Success;
+            response.info.message = "Success";
+            response.data = transactions;
 
-       return ResponseEntity.ok(response);
+            return ResponseEntity.ok(response);
+        } catch (ResourceNotFoundException re) {
+            throw re;
+        }
+
     }
-    
-    //  performs money transfer between accounts
+
+    // performs money transfer between accounts
     @PutMapping("transfer")
     public ResponseEntity<?> transfer(@RequestBody User user) {
         System.out.println(user);

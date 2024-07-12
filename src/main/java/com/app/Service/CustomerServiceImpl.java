@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.app.CustomException.InvalidInputException;
@@ -26,12 +27,19 @@ public class CustomerServiceImpl implements CustomerService{
     
     @Autowired
     private ModelMapper mapper;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     //adding customer
     @Override
     public ApiResponse addCustomer(CustomerDto customerDto) {
+
+       Customer customer =  mapper.map(customerDto, Customer.class);
+
+       customer.setPassword(passwordEncoder.encode(customer.getName()));
         
-        custRep.save(mapper.map(customerDto, Customer.class));
+        custRep.save(customer);
 
         return new ApiResponse("New Customer added");
     }
@@ -39,6 +47,8 @@ public class CustomerServiceImpl implements CustomerService{
     // Setting pin
     @Override
     public ApiResponse setPin(User user) {
+
+       
        
         //first customer is fetched from database
         Customer customer = custRep.findById(user.getId())
@@ -53,6 +63,24 @@ public class CustomerServiceImpl implements CustomerService{
         return new ApiResponse("New Pin is Set");
 
     }
+
+     // Setting password
+     @Override
+     public ApiResponse setPassword(User user) {
+        
+         //first customer is fetched from database
+         Customer customer = custRep.findById(user.getId())
+         .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+         
+         // then pin is set to the customer
+         customer.setPassword(passwordEncoder.encode(user.getPassword()));
+ 
+         custRep.save(customer);
+ 
+         // returns an apiresponse for confirmation
+         return new ApiResponse("New Password is Set");
+ 
+     }
 
     // fetches whole list of customers
     @Override

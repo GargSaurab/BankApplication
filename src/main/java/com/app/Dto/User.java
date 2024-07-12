@@ -11,5 +11,6 @@ public class User {
     private int pin;  
     private int otherId;
     private double  amount;
+    private String password;
 
 }
