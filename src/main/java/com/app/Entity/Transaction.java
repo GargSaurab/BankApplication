@@ -44,4 +44,16 @@ public class Transaction {
         this.customer.addTransaction(this);
     }
 
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "trscId=" + trscId +
+                ", amount=" + amount +
+                ", time=" + time +
+                ", type='" + type + '\'' +
+                ", customerId=" + (customer != null ? customer.getCustId() : null) +
+                ", fromToCustomerId=" + (from_To != null ? from_To.getCustId() : null) +
+                '}';
+    }
+
 }

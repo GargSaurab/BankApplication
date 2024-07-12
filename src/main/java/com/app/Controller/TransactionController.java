@@ -89,7 +89,7 @@ public class TransactionController {
     public ResponseEntity<?> transfer(@RequestBody User user) {
         System.out.println(user);
         try {
-            trscSrv.deposit(user);
+            trscSrv.transfer(user);
             ApiResponse response = new ApiResponse(user.getAmount() + "transfered");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (ResourceNotFoundException re) {

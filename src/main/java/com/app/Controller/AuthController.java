@@ -42,6 +42,7 @@ public class AuthController {
         this.doAuthenticate(request.getName(),request.getPassword());
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getName());
+        logger.info(userDetails.toString());
         String token = this.helper.generateToken(userDetails);
 
         JWTResponse response = JWTResponse.builder()
@@ -51,10 +52,14 @@ public class AuthController {
                     return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    private void doAuthenticate(String email, String password)
+    private void doAuthenticate(String name, String password)
     {
-          UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, password);
-          
+
+        logger.info(name, password);
+          UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(name, password);
+
+         logger.info(authentication.toString());
+
           try {
              manager.authenticate(authentication);
           } catch (Exception e) {

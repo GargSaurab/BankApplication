@@ -3,6 +3,7 @@ package com.app.Entity;
 import java.util.List;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,7 +31,7 @@ public class Customer {
     private String address;
     public String role;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     private List<Transaction> transactions;
 
     public Customer(String name, double balance, String address) {
@@ -54,6 +55,19 @@ public class Customer {
         transaction.setCustomer(this);
     }
 
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "custId=" + custId +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", balance=" + balance +
+                ", pin='" + pin + '\'' +
+                ", address='" + address + '\'' +
+                ", role='" + role + '\'' +
+                ", transactionsCount=" + (transactions != null ? transactions.size() : 0) +
+                '}';
+    }
 
 }
 
