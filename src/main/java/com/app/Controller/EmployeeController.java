@@ -28,6 +28,8 @@ public class EmployeeController {
     @PostMapping("/add")
     public ResponseEntity<?> addEmployee(@RequestBody BankEmployeeDto empDto)
     {
+        System.out.println(empDto);
+
         try {
             
              return ResponseEntity.status(HttpStatus.CREATED)

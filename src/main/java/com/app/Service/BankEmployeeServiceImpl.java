@@ -34,7 +34,12 @@ public class BankEmployeeServiceImpl implements BankEmployeeService {
       
         BankEmployee employee = mapper.map(empDto, BankEmployee.class);
 
+
+        employee.setJobTitle(empDto.getJobTitle());
+
         employee.setPassword(passwordEncoder.encode(employee.getName()));
+
+        System.out.println(employee);
 
         beRep.save(employee);
 

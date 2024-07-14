@@ -56,7 +56,7 @@ public class AuthController {
     {
         logger.info("Authentication -> Name: {}, Password: {}",name,password);
 
-          UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, password);
+          UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(name, password);
           
            logger.info(authentication.toString());
 
