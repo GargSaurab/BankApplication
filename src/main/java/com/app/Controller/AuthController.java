@@ -37,7 +37,7 @@ public class AuthController {
    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody JWTRequest request){
          
-        logger.info(request.getName() + " " + request.getPassword());
+        logger.info("login -> Name: {}, Password: {}",request.getName(),request.getPassword());
 
         this.doAuthenticate(request.getName(),request.getPassword());
 
@@ -53,8 +53,12 @@ public class AuthController {
 
     private void doAuthenticate(String email, String password)
     {
+        logger.info("Authentication -> Name: {}, Password: {}",email,password);
+
           UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, password);
           
+           logger.info(authentication.toString());
+
           try {
              manager.authenticate(authentication);
           } catch (Exception e) {
