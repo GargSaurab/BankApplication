@@ -1,5 +1,7 @@
 package com.app.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,9 +13,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 
 import com.app.Security.JWTAuthenticationEntryPoint;
-import com.app.Security.JWTAuthenticationFilter;
+import com.app.filter.JWTAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
@@ -25,12 +28,6 @@ public class SecurityFilterChainConfig {
     @Autowired
     private JWTAuthenticationFilter filter;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
          http.csrf(csrf -> csrf.disable())
@@ -38,24 +35,36 @@ public class SecurityFilterChainConfig {
              request.requestMatchers("/auth/login").permitAll()
              .requestMatchers("/transaction").hasRole("CUST")
              .requestMatchers("/employee").hasRole("EMP")
-             .requestMatchers("/employee/add").permitAll()
              .anyRequest()
              .authenticated()
              ).exceptionHandling(ex -> ex.authenticationEntryPoint(point))
              .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-             // sets this filterchain before Authentication filter
-             http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+                // setting Authentication filter before
+                http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
 
              return http.build();
     }
-
-    @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider()
-    {
-        DaoAuthenticationProvider doDaoAuthenticationProvider = new DaoAuthenticationProvider();
-        doDaoAuthenticationProvider.setUserDetailsService(userDetailsService);
-        doDaoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
-        return doDaoAuthenticationProvider;
-    }
 }
+
+/*
+ * 
+ * ----XSS---
+ * 
+ * XSS is a common type of injection attack. In XSS, the attacker tries to
+ * execute malicious code in a web application. They interact with it through a
+ * web browser or HTTP client tools like Postman.
+ * 
+ * 
+ * ---CSP---
+ * 
+ * CSP is a powerful security mechanism built into web browsers. It acts as a
+ * set of rules that tell the browser which resources (like scripts, images,
+ * stylesheets, etc.) are allowed to load on your website. This helps prevent
+ * various attacks, including Cross-Site Scripting (XSS).
+ ****** https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-
+ * Policy *******
+ * 
+ * 
+ * 
+ */

@@ -1,4 +1,4 @@
-package com.app.Security;
+package com.app.filter;
 
 import java.io.IOException;
 
@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.app.Security.JwtHelper;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -85,7 +87,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
               }
         }
 
-        // is called to pass control to the next filter in the, if not present then to the resource itself
+        // is called to pass control to the next filter in the line, if not present then to the resource itself
         filterChain.doFilter(request, response);
 
     }
