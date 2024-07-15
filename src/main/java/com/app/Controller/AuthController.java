@@ -47,7 +47,8 @@ public class AuthController {
 
         JWTResponse response = JWTResponse.builder()
                     .jwtToken(token)
-                    .username(userDetails.getUsername()).build();
+                    .userName(userDetails.getUsername())
+                    .build();
 
                     return new ResponseEntity<>(response,HttpStatus.OK);
     }
@@ -63,7 +64,7 @@ public class AuthController {
           try {
              manager.authenticate(authentication);
           } catch (Exception e) {
-             throw new BadCredentialsException("Invalid Username or password");
+             throw new BadCredentialsException("error");
           }
 
     }

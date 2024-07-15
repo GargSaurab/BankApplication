@@ -33,7 +33,7 @@ public class CustomerServiceImpl implements CustomerService{
 
     //adding customer
     @Override
-    public ApiResponse addCustomer(CustomerDto customerDto) {
+    public void addCustomer(CustomerDto customerDto) {
 
        Customer customer =  mapper.map(customerDto, Customer.class);
 
@@ -41,12 +41,11 @@ public class CustomerServiceImpl implements CustomerService{
         
         custRep.save(customer);
 
-        return new ApiResponse("New Customer added");
     }
 
     // Setting pin
     @Override
-    public ApiResponse setPin(User user) {
+    public void setPin(User user) {
 
        
        
@@ -58,9 +57,6 @@ public class CustomerServiceImpl implements CustomerService{
         customer.setPin(user.getPin());
 
         custRep.save(customer);
-
-        // returns an apiresponse for confirmation
-        return new ApiResponse("New Pin is Set");
 
     }
 

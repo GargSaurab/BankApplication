@@ -14,10 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.CustomException.InvalidInputException;
 import com.app.CustomException.ResourceNotFoundException;
 import com.app.Dto.ApiResponse;
+import com.app.Dto.CommonResponse;
 import com.app.Dto.CustomerDto;
+import com.app.Dto.StatusCode;
 import com.app.Dto.User;
 import com.app.Service.CustomerService;
-
 
 @RestController
 @RequestMapping("/customer")
@@ -30,12 +31,21 @@ public class CustomerController {
    @Secured("EMP")
    @PostMapping("/add")
    public ResponseEntity<?> addCustomer(@RequestBody CustomerDto customer) {
+
+      CommonResponse response = new CommonResponse();
+
       try {
-         return ResponseEntity.status(HttpStatus.CREATED)
-               .body(custSrv.addCustomer(customer));
+
+         custSrv.addCustomer(customer);
+
+         response.info.code = StatusCode.Success;
+         response.info.message = "Succesfully added new customer.";
+         return ResponseEntity.ok(response);
+
       } catch (Exception e) {
-         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-               .body(new ApiResponse("Some error occured " + e.getMessage()));
+     
+         throw e;
+     
       }
    }
 
@@ -43,28 +53,48 @@ public class CustomerController {
    @Secured("CUST")
    @PutMapping("/setPin")
    public ResponseEntity<?> setPin(@RequestBody User user) {
+
+      CommonResponse response = new CommonResponse();
+
       try {
-         return ResponseEntity.status(HttpStatus.OK)
-               .body(custSrv.setPin(user));
+
+         custSrv.setPin(user);
+
+         response.info.code = StatusCode.Success;
+         response.info.message = "New pin set.";
+         return ResponseEntity.ok(response);
+
       } catch (ResourceNotFoundException re) {
+     
          throw re;
+     
       } catch (Exception e) {
-         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-               .body(new ApiResponse("Some error occured " + e.getMessage()));
+     
+         throw e;
+     
       }
    }
 
    @Secured("CUST")
    @PutMapping("/setPass")
    public ResponseEntity<?> setPassword(@RequestBody User user) {
+
+       CommonResponse response = new CommonResponse();
+
       try {
-         return ResponseEntity.status(HttpStatus.OK)
-               .body(custSrv.setPassword(user));
+         custSrv.setPassword(user);
+
+         response.info.code = StatusCode.Success;
+         response.info.message = "New password set.";
+         return ResponseEntity.ok(response);
       } catch (ResourceNotFoundException re) {
+
          throw re;
+      
       } catch (Exception e) {
-         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-               .body(new ApiResponse("Some error occured " + e.getMessage()));
+      
+         throw e;
+      
       }
    }
 
@@ -72,12 +102,15 @@ public class CustomerController {
    @Secured("EMP")
    @GetMapping("/listcustomers")
    public ResponseEntity<?> listAllCustomers() {
+
+      CommonResponse response = new CommonResponse();
+
       try {
-         return ResponseEntity.ok()
-               .body(custSrv.listAllCustomers());
+         return ResponseEntity.ok().body(custSrv.listAllCustomers());
       } catch (Exception e) {
-         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-               .body(new ApiResponse("Some error occured " + e.getMessage()));
+        
+         throw e;
+
       }
    }
 
@@ -85,10 +118,9 @@ public class CustomerController {
    @Secured("CUST")
    @PostMapping("/customerbyid")
    public ResponseEntity<?> getCustomerById(@RequestBody User user) {
-       
+
       try {
-         return ResponseEntity.ok()
-         .body(custSrv.getCustomerById(user));
+         return ResponseEntity.ok().body(custSrv.getCustomerById(user));
       } catch (InvalidInputException re) {
          throw re;
       } catch (Exception e) {
@@ -96,6 +128,5 @@ public class CustomerController {
                .body(new ApiResponse("Some error occured " + e.getMessage()));
       }
    }
-   
 
 }

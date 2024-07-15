@@ -8,9 +8,9 @@ import com.app.Dto.User;
 
 public interface CustomerService {
 
-     public ApiResponse addCustomer(CustomerDto customer);
+     public void addCustomer(CustomerDto customer);
 
-     public ApiResponse setPin(User user);
+     public void setPin(User user);
 
      public ApiResponse setPassword(User user);
 
