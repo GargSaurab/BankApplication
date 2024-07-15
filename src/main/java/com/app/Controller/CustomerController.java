@@ -1,7 +1,6 @@
 package com.app.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.CustomException.InvalidInputException;
 import com.app.CustomException.ResourceNotFoundException;
-import com.app.Dto.ApiResponse;
 import com.app.Dto.CommonResponse;
 import com.app.Dto.CustomerDto;
 import com.app.Dto.StatusCode;
@@ -106,7 +104,12 @@ public class CustomerController {
       CommonResponse response = new CommonResponse();
 
       try {
-         return ResponseEntity.ok().body(custSrv.listAllCustomers());
+         
+         response.info.code = StatusCode.Success;
+         response.info.message = "List of customers fetched.";
+         response.data = custSrv.listAllCustomers();
+         return ResponseEntity.ok(response);
+
       } catch (Exception e) {
         
          throw e;
@@ -118,14 +121,25 @@ public class CustomerController {
    @Secured("CUST")
    @PostMapping("/customerbyid")
    public ResponseEntity<?> getCustomerById(@RequestBody User user) {
+       
+         CommonResponse response = new CommonResponse();
 
       try {
-         return ResponseEntity.ok().body(custSrv.getCustomerById(user));
+
+         CustomerDto customer = custSrv.getCustomerById(user);
+         
+         response.info.code =  StatusCode.Success;
+         response.info.message = String.format("%s data is fetched", customer.getName());
+         response.data = customer;
+         return ResponseEntity.ok(response);
       } catch (InvalidInputException re) {
+      
          throw re;
+      
       } catch (Exception e) {
-         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-               .body(new ApiResponse("Some error occured " + e.getMessage()));
+        
+         throw e;
+      
       }
    }
 

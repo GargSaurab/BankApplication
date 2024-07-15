@@ -1,7 +1,6 @@
 package com.app.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,8 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.CustomException.ResourceNotFoundException;
-import com.app.Dto.ApiResponse;
 import com.app.Dto.BankEmployeeDto;
+import com.app.Dto.CommonResponse;
+import com.app.Dto.StatusCode;
 import com.app.Dto.User;
 import com.app.Service.BankEmployeeService;
 
@@ -30,46 +30,64 @@ public class EmployeeController {
     {
         System.out.println(empDto);
 
+        CommonResponse response = new CommonResponse();
+
         try {
-            
-             return ResponseEntity.status(HttpStatus.CREATED)
-             .body(beSrv.addEmployee(empDto));
+
+            beSrv.addEmployee(empDto);
+
+            response.info.code = StatusCode.Success;
+            response.info.message = "New employee added.";
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(new ApiResponse("Some error occured " + e.getMessage()));
+           throw e;
+
         }
     }
 
    @PutMapping("/setPass")
     public ResponseEntity<?> setPassword(@RequestBody User user)
     {
-        try {
-            
-             return ResponseEntity.status(HttpStatus.CREATED)
-             .body(beSrv.setPassword(user));
+       CommonResponse response = new CommonResponse();
+       
+       try {
 
+        beSrv.setPassword(user);
+           
+           response.info.code = StatusCode.Success;
+           response.info.message = "New password is set.";
+           return ResponseEntity.ok(response);
+           
         } catch (Exception e) {
             
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(new ApiResponse("Some error occured " + e.getMessage()));
+            throw e;
+            
         }
     }
-
+    
     @DeleteMapping("/delete")
     public ResponseEntity<?> removeEmployee(@RequestParam Integer id)
     {
+        CommonResponse response = new CommonResponse();
+
         try {
-             return ResponseEntity.status(HttpStatus.OK)
-             .body(beSrv.removeEmployee(id));
+
+            beSrv.removeEmployee(id);
+            
+            response.info.code = StatusCode.Success;
+            response.info.message = "Employee removed.";
+            return ResponseEntity.ok(response);
+
         }catch(ResourceNotFoundException re)
         {
             throw re;
         } 
         catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(new ApiResponse("Some error occured " + e.getMessage()));
+            
+            throw e;
+
         }
     }
 

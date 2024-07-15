@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.app.CustomException.InvalidInputException;
 import com.app.CustomException.ResourceNotFoundException;
 import com.app.Dao.CustomerRepo;
-import com.app.Dto.ApiResponse;
 import com.app.Dto.CustomerDto;
 import com.app.Dto.User;
 import com.app.Entity.Customer;
@@ -62,7 +61,7 @@ public class CustomerServiceImpl implements CustomerService{
 
      // Setting password
      @Override
-     public ApiResponse setPassword(User user) {
+     public void setPassword(User user) {
         
          //first customer is fetched from database
          Customer customer = custRep.findById(user.getId())
@@ -72,9 +71,7 @@ public class CustomerServiceImpl implements CustomerService{
          customer.setPassword(passwordEncoder.encode(user.getPassword()));
  
          custRep.save(customer);
- 
-         // returns an apiresponse for confirmation
-         return new ApiResponse("New Password is Set");
+
  
      }
 

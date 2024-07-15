@@ -30,10 +30,10 @@ public class GlobalExceptionHandler {
     //InvalidInputException
     @ExceptionHandler(InvalidInputException.class)
     public ResponseEntity<?> handlerInvalidInputException(InvalidInputException e) {
-        System.out.println("Invalid input in" + e);
+        System.out.println("Invalid input in" + e.getMessage());
 
         response.info.code = StatusCode.bad_request;
-        response.info.message = "Invalid input please check again!";
+        response.info.message = String.format("Invalid input please check again! %s", e.getMessage()) ;
         return ResponseEntity.ok(response);
     }
 
