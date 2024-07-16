@@ -1,5 +1,7 @@
 package com.app.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,13 +24,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     private BankEmployeeRepo empRepo;
-//
-//    @Autowired
-//    private Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
-//
+
+    private Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        logger.info(username);
 
         Customer cust = custRepo.findByName(username);
         if(cust != null)

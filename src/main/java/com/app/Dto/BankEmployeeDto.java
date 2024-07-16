@@ -1,5 +1,7 @@
 package com.app.Dto;
 
+import com.app.Entity.JobTitle;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +11,6 @@ public class BankEmployeeDto {
 
     private int empId;
     private String name;
-    private JobTitleDto jobTitle;
+    private JobTitle jobTitle;
 
 }

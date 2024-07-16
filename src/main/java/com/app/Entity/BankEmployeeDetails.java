@@ -1,8 +1,10 @@
 package com.app.Entity;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.AllArgsConstructor;
@@ -16,7 +18,8 @@ public class BankEmployeeDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_EMP"));
     }
 
     @Override

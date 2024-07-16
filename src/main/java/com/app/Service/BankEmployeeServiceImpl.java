@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.app.CustomException.ResourceNotFoundException;
 import com.app.Dao.BankEmployeeRepo;
-import com.app.Dto.ApiResponse;
 import com.app.Dto.BankEmployeeDto;
 import com.app.Dto.User;
 import com.app.Entity.BankEmployee;
@@ -30,19 +29,23 @@ public class BankEmployeeServiceImpl implements BankEmployeeService {
 
     // New Employee added
     @Override
-    public ApiResponse addEmployee(BankEmployeeDto empDto) {
+    public void addEmployee(BankEmployeeDto empDto) {
       
         BankEmployee employee = mapper.map(empDto, BankEmployee.class);
 
+
+        employee.setJobTitle(empDto.getJobTitle());
+
         employee.setPassword(passwordEncoder.encode(employee.getName()));
+
+        System.out.println(employee);
 
         beRep.save(employee);
 
-        return new ApiResponse("New Employee joined");
     }
 
      @Override
-     public ApiResponse setPassword(User user) {
+     public void setPassword(User user) {
 
         System.out.println(user);
         
@@ -55,18 +58,14 @@ public class BankEmployeeServiceImpl implements BankEmployeeService {
  
          beRep.save(employee);
  
-         // returns an apiresponse for confirmation
-         return new ApiResponse("New Password is Set");
- 
      }
 
     // Employee removed
     @Override
-    public ApiResponse removeEmployee(int id) {
+    public void removeEmployee(int id) {
         
         beRep.deleteById(id);
 
-        return new ApiResponse(id + " employee is removed");
     }
 
     

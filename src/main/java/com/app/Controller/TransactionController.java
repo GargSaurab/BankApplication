@@ -3,7 +3,6 @@ package com.app.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.CustomException.InvalidInputException;
 import com.app.CustomException.ResourceNotFoundException;
-import com.app.Dto.ApiResponse;
 import com.app.Dto.CommonResponse;
 import com.app.Dto.StatusCode;
 import com.app.Dto.TransactionDto;
@@ -34,15 +32,24 @@ public class TransactionController {
     // Withdraw's money
     @PutMapping("/withdraw")
     public ResponseEntity<?> withdraw(@RequestBody User user) {
+    
+         CommonResponse response =  new CommonResponse();
 
         try {
             trscSrv.withdraw(user);
-            ApiResponse response = new ApiResponse(user.getAmount() + "withdrawed");
-            return new ResponseEntity<>(response, HttpStatus.OK);
+
+            response.info.code = StatusCode.Success;
+            response.info.message = String.format(" %s withdrawed", user.getAmount());
+            return ResponseEntity.ok(response);
+
         } catch (ResourceNotFoundException re) {
+        
             throw re; // if server have some issue
+        
         } catch (InvalidInputException ie) {
+        
             throw ie; // if user feeds wrong input
+        
         }
 
     }
@@ -51,14 +58,23 @@ public class TransactionController {
     @PutMapping("/deposit")
     public ResponseEntity<?> deposit(@RequestBody User user) {
 
+        CommonResponse response = new CommonResponse();
+
         try {
             trscSrv.deposit(user);
-            ApiResponse response = new ApiResponse(user.getAmount() + "deposited");
-            return new ResponseEntity<>(response, HttpStatus.OK);
+
+            response.info.code =  StatusCode.Success;
+            response.info.message = String.format("%s deposited", user.getAmount());
+            return ResponseEntity.ok(response);
+
         } catch (ResourceNotFoundException re) {
+       
             throw re;
+       
         } catch (InvalidInputException ie) {
+       
             throw ie;
+       
         }
 
     }
@@ -76,8 +92,8 @@ public class TransactionController {
             response.info.code = StatusCode.Success;
             response.info.message = "Success";
             response.data = transactions;
-
             return ResponseEntity.ok(response);
+            
         } catch (ResourceNotFoundException re) {
             throw re;
         }
@@ -88,14 +104,23 @@ public class TransactionController {
     @PutMapping("transfer")
     public ResponseEntity<?> transfer(@RequestBody User user) {
         System.out.println(user);
+        CommonResponse response = new CommonResponse();
+
         try {
-            trscSrv.transfer(user);
-            ApiResponse response = new ApiResponse(user.getAmount() + "transfered");
-            return new ResponseEntity<>(response, HttpStatus.OK);
+             trscSrv.transfer(user);
+
+            response.info.code = StatusCode.Success;
+            response.info.message = String.format("%s transfered", user.getAmount());
+            return ResponseEntity.ok(response);
+
         } catch (ResourceNotFoundException re) {
+      
             throw re;
+      
         } catch (InvalidInputException ie) {
+      
             throw ie;
+      
         }
     }
 

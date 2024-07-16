@@ -31,9 +31,9 @@ public class TransferServiceTest {
         transactionRepo = mock(TransactionRepo.class);
         modelMapper = mock(ModelMapper.class);
         transactionService = new TransactionServiceImpl();
-        transactionService.custRep = customerRepo;
-        transactionService.trscRep = transactionRepo;
-        transactionService.mapper = modelMapper;
+        // transactionService.custRep = customerRepo;
+        // transactionService.trscRep = transactionRepo;
+        //    transactionService.mapper = modelMapper;
     }
 
     @Test

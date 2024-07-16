@@ -47,29 +47,24 @@ public class AuthController {
 
         JWTResponse response = JWTResponse.builder()
                     .jwtToken(token)
-                    .username(userDetails.getUsername()).build();
+                    .userName(userDetails.getUsername())
+                    .build();
 
                     return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     private void doAuthenticate(String name, String password)
     {
+        logger.info("Authentication -> Name: {}, Password: {}",name,password);
 
-        logger.info(name, password);
           UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(name, password);
 
          logger.info(authentication.toString());
 
-        logger.info("Authentication -> Name: {}, Password: {}",email,password);
-
-          UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, password);
-          
-           logger.info(authentication.toString());
-
           try {
              manager.authenticate(authentication);
           } catch (Exception e) {
-             throw new BadCredentialsException("Invalid Username or password");
+             throw new BadCredentialsException("error");
           }
 
     }

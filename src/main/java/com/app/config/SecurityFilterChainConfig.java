@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 
 import com.app.Security.JWTAuthenticationEntryPoint;
 import com.app.filter.JWTAuthenticationFilter;
@@ -28,30 +27,38 @@ public class SecurityFilterChainConfig {
         @Autowired
         private JWTAuthenticationFilter filter;
 
+        @Autowired
+        private UserDetailsService userDetailsService;
+
+        @Autowired
+        private PasswordEncoder passwordEncoder;
+
         private Logger logger = LoggerFactory.getLogger(SecurityFilterChainConfig.class);
 
         // Configuring a filter for setting up Content Security Policy(CSP), it's an
         // added layer of security that helps migitate XSS and data injection attacks.
         // @Bean
-        // public SecurityFilterChain cspFilterChain(HttpSecurity http) throws Exception {
-        //         logger.info("In the CspConfig");
+        // public SecurityFilterChain cspFilterChain(HttpSecurity http) throws Exception
+        // {
+        // logger.info("In the CspConfig");
 
-        //         http.headers(headers ->
-        //         // Configure XSS protection header
-        //         headers.xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
-        //                         .contentSecurityPolicy(
-        //                                         // Configure CSP to allow scripts only form 'self'
-        //                                         // the keyword 'self' is used to allow resources from the same origin as
-        //                                         // the current page
-        //                                         csp -> csp.policyDirectives("script-src 'self'")));
+        // http.headers(headers ->
+        // // Configure XSS protection header
+        // headers.xssProtection(xss ->
+        // xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
+        // .contentSecurityPolicy(
+        // // Configure CSP to allow scripts only form 'self'
+        // // the keyword 'self' is used to allow resources from the same origin as
+        // // the current page
+        // csp -> csp.policyDirectives("script-src 'self'")));
 
-        //         return http.build();
+        // return http.build();
         // }
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-                logger.info("In the SecurityFilterChain");
+                logger.info("Security filter chain => {} ", http.toString());
 
                 http.csrf(csrf -> csrf.disable())
                                 .authorizeHttpRequests(request -> request.requestMatchers("/auth/login").permitAll()
@@ -62,10 +69,18 @@ public class SecurityFilterChainConfig {
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-                // setting Authentication filter before
+                // sets this filterchain before Authentication filter
                 http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
 
                 return http.build();
+        }
+
+        @Bean
+        public DaoAuthenticationProvider daoAuthenticationProvider() {
+                DaoAuthenticationProvider doDaoAuthenticationProvider = new DaoAuthenticationProvider();
+                doDaoAuthenticationProvider.setUserDetailsService(userDetailsService);
+                doDaoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+                return doDaoAuthenticationProvider;
         }
 }
 
