@@ -26,13 +26,13 @@ import jakarta.transaction.Transactional;
 public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
-    public TransactionRepo trscRep;
+    private TransactionRepo trscRep;
 
     @Autowired
-    public CustomerRepo custRep;
+    private CustomerRepo custRep;
 
     @Autowired
-    public ModelMapper mapper;
+    private ModelMapper mapper;
 
     private Logger logger = LoggerFactory.getLogger(TransactionServiceImpl.class);
 
@@ -119,11 +119,11 @@ public class TransactionServiceImpl implements TransactionService {
 
         // fetching data of the sender
         Customer sender = custRep.findById(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("sender not found")); 
+                .orElseThrow(() -> new ResourceNotFoundException("sender not found"));
 
-        // fetching data of the recepient        
+        // fetching data of the recepient
         Customer recipient = custRep.findById(user.getOtherId())
-        .orElseThrow(() -> new ResourceNotFoundException("recepient not found")); 
+                .orElseThrow(() -> new ResourceNotFoundException("recepient not found"));
 
         // checks pin given by user
         if (sender.getPin() != (user.getPin())) {
@@ -142,20 +142,21 @@ public class TransactionServiceImpl implements TransactionService {
         // updating balance and saving the updated dat of both sender and recipient
         sender.setBalance(senderBalance - amount);
         recipient.setBalance(recipientBalance + amount);
-        
+
         logger.info("Sender" + senderBalance);
-        
+
         custRep.save(sender);
         custRep.save(recipient);
-        
+
         // logging the new transaction
         Transaction transaction1 = new Transaction(user.getAmount(),TrscType.TRANSFER_CREDIT,sender,recipient);
 
         trscRep.save(transaction1);
-      
+
         Transaction transaction2 = new Transaction(user.getAmount(),TrscType.TRANSFER_DEBIT,recipient,sender);
 
         trscRep.save(transaction2);
+        
 
     }
 

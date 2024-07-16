@@ -3,6 +3,7 @@ package com.app.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,6 +27,7 @@ public class CustomerController {
    private CustomerService custSrv;
 
    // Adding Customer to database
+   @Secured("EMP")
    @PostMapping("/add")
    public ResponseEntity<?> addCustomer(@RequestBody CustomerDto customer) {
       try {
@@ -37,7 +39,8 @@ public class CustomerController {
       }
    }
 
-   // seting pin given by customer
+   // setting pin given by customer
+   @Secured("CUST")
    @PutMapping("/setPin")
    public ResponseEntity<?> setPin(@RequestBody User user) {
       try {
@@ -51,7 +54,22 @@ public class CustomerController {
       }
    }
 
+   @Secured("CUST")
+   @PutMapping("/setPass")
+   public ResponseEntity<?> setPassword(@RequestBody User user) {
+      try {
+         return ResponseEntity.status(HttpStatus.OK)
+               .body(custSrv.setPassword(user));
+      } catch (ResourceNotFoundException re) {
+         throw re;
+      } catch (Exception e) {
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+               .body(new ApiResponse("Some error occured " + e.getMessage()));
+      }
+   }
+
    // Employee can fetch list of all the customers
+   @Secured("EMP")
    @GetMapping("/listcustomers")
    public ResponseEntity<?> listAllCustomers() {
       try {
@@ -63,7 +81,8 @@ public class CustomerController {
       }
    }
 
-   // Customer can get info about themself
+   // Customer can get info about themselve
+   @Secured("CUST")
    @PostMapping("/customerbyid")
    public ResponseEntity<?> getCustomerById(@RequestBody User user) {
        
