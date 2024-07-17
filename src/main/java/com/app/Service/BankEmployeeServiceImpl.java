@@ -1,5 +1,8 @@
 package com.app.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -60,6 +63,14 @@ public class BankEmployeeServiceImpl implements BankEmployeeService {
  
      }
 
+     @Override
+     public List<BankEmployeeDto> employeeList() {
+
+         return beRep.findAll().stream() .map(emp -> mapper.map(emp, BankEmployeeDto.class))
+                .collect(Collectors.toList());
+ 
+     }
+
     // Employee removed
     @Override
     public void removeEmployee(int id) {
@@ -67,7 +78,5 @@ public class BankEmployeeServiceImpl implements BankEmployeeService {
         beRep.deleteById(id);
 
     }
-
-    
 
 }

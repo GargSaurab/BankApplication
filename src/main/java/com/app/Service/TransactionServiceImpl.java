@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import com.app.CustomException.InvalidInputException;
 import com.app.CustomException.ResourceNotFoundException;
 import com.app.Dao.CustomerRepo;
+import com.app.Dao.ProcedureRepo;
 import com.app.Dao.TransactionRepo;
+import com.app.Dto.CustomerDto;
 import com.app.Dto.TransactionDto;
 import com.app.Dto.User;
 import com.app.Entity.Customer;
@@ -30,6 +32,9 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
     private CustomerRepo custRep;
+
+    @Autowired
+    private ProcedureRepo prRep;
 
     @Autowired
     private ModelMapper mapper;
@@ -157,7 +162,26 @@ public class TransactionServiceImpl implements TransactionService {
 
         trscRep.save(transaction2);
         
-
     }
+
+    // Fetching the customer data who made the transaction
+    @Override
+    public CustomerDto getCustomerByTransaction(int id) {
+
+        logger.info("In the getCustomerByTrsc in controller");
+      
+    //    int custId = trscRep.getcustomer(id);
+
+       int custId = prRep.getcustomer(id);
+
+       Customer customer = custRep.findById(custId)
+              .orElseThrow(() -> new ResourceNotFoundException("Some error occured!"));
+
+       logger.info("Customer : {}", customer);
+
+       return mapper.map(customer, CustomerDto.class);
+    }
+
+    
 
 }

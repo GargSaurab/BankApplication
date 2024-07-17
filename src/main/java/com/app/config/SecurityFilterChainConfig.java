@@ -63,7 +63,7 @@ public class SecurityFilterChainConfig {
                 http.csrf(csrf -> csrf.disable())
                                 .authorizeHttpRequests(request -> request.requestMatchers("/auth/login").permitAll()
                                                 .requestMatchers("/transaction").hasRole("CUST")
-                                                .requestMatchers("/employee").hasRole("EMP").anyRequest()
+                                                .requestMatchers("/employee/**").hasRole("EMP").anyRequest()
                                                 .authenticated())
                                 .exceptionHandling(ex -> ex.authenticationEntryPoint(point))
                                 .sessionManagement(session -> session

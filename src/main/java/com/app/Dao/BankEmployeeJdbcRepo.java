@@ -47,7 +47,7 @@ public class BankEmployeeJdbcRepo {
 
     public List<BankEmployee> findAll()
     {
-        String sql = "select * from bank_employee  where id = ?";
+        String sql = "select * from bank_employee where id = ?";
 
         return jdbcTemplate.query(sql, (rs, rowNum) ->
               new BankEmployee(
