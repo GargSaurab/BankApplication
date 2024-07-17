@@ -86,7 +86,7 @@ public class TransactionController {
     }
 
     // returns list off all transactions done by a customer
-    @PreAuthorize("hasRole('EMP')")
+    @PreAuthorize("hasRole('ROLE_EMP')")
     @GetMapping("/transactions")
     public ResponseEntity<?> listAllTransactions(@RequestParam int id) {
 

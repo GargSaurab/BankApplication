@@ -26,7 +26,7 @@ public class ProcedureRepo {
      getCustomer = new SimpleJdbcCall(jdbcTemplate)
              .withProcedureName("getcustomer")
              .declareParameters(
-                  new SqlParameter("trsc_id", Types.INTEGER),
+                  new SqlParameter("transaction_id", Types.INTEGER),
                   new SqlOutParameter("customer_id", Types.INTEGER)
              );
  }

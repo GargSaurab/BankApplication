@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.app.Dto.BankEmployeeDto;
 import com.app.Dto.User;
-import com.app.Entity.Customer;
 
 @Service
 public interface BankEmployeeService {
