@@ -49,6 +49,8 @@ public class GlobalExceptionHandler {
     //Exception
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handlerException(Exception e) {
+
+        e.printStackTrace();
     
         response.info.code = StatusCode.server_Error;
         response.info.message = "Some unexpected error occured! please try again.";

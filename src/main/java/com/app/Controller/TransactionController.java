@@ -150,6 +150,10 @@ public class TransactionController {
          } catch (ResourceNotFoundException re) {
              throw re;
          }
+         catch(Exception e)
+         {
+             throw e;
+         }
  
      }
 

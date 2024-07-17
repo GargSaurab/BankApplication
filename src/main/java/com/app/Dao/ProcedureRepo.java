@@ -1,16 +1,13 @@
 package com.app.Dao;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.Types;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.SqlOutParameter;
-import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
-
-import jakarta.annotation.PostConstruct;
 
 @Repository
 public class ProcedureRepo {
@@ -20,22 +17,28 @@ public class ProcedureRepo {
 
  private SimpleJdbcCall getCustomer;
 
- @PostConstruct
- public void init()
- {
-     getCustomer = new SimpleJdbcCall(jdbcTemplate)
-             .withProcedureName("getcustomer")
-             .declareParameters(
-                  new SqlParameter("transaction_id", Types.INTEGER),
-                  new SqlOutParameter("customer_id", Types.INTEGER)
-             );
- }
+//  @PostConstruct
+//  public void init()
+//  {
+//      getCustomer = new SimpleJdbcCall(jdbcTemplate)
+//              .withProcedureName("getcustomer"
+//              .declareParameters(
+//                   new SqlParameter("trsc_id", Types.INTEGER),
+//                   new SqlOutParameter("customer_id", Types.INTEGER)
+//              ));
+//  }
 
- public int getcustomer(int id)
- {
-        Map<String,Object> out = getCustomer.execute(id);
+//  public Customer getCustomerByTransaction
 
-        return (int) out.get("customer_id");
- }
+ public Integer getCustomer(int transactionId) {
+        return jdbcTemplate.execute((Connection connection) -> {
+            try (CallableStatement callableStatement = connection.prepareCall("call getcustomer(?,?)")) {
+                callableStatement.setInt(1, transactionId);
+                callableStatement.registerOutParameter(2, Types.INTEGER);
+                callableStatement.execute();
+                return callableStatement.getInt(2);
+            }
+        });
+    }
 
 }

@@ -168,11 +168,13 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public CustomerDto getCustomerByTransaction(int id) {
 
-        logger.info("In the getCustomerByTrsc in controller");
+        logger.info("In the getCustomerByTrsc in service");
       
     //    int custId = trscRep.getcustomer(id);
 
-       int custId = prRep.getcustomer(id);
+       int custId = prRep.getCustomer(id);
+
+       logger.info("ID => {}",custId);
 
        Customer customer = custRep.findById(custId)
               .orElseThrow(() -> new ResourceNotFoundException("Some error occured!"));
