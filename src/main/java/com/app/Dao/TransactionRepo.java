@@ -20,3 +20,18 @@ public interface TransactionRepo extends JpaRepository<Transaction,Integer>{
      @Procedure( "getcustomer")
      int getcustomer(@Param("transaction_id") int transactionId);
 }
+
+/*
+ * CREATE OR REPLACE PROCEDURE getcustomer(
+    IN transaction_id int
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    SELECT *
+    FROM transaction t
+    WHERE t.trsc_id = transaction_id;
+END;
+$$;
+
+*/
