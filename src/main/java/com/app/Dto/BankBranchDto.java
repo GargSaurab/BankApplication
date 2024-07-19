@@ -1,16 +1,12 @@
-package com.app.Entity;
+package com.app.Dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Data
 @NoArgsConstructor
-public class BankBranch {
-    
-    @Id
+public class BankBranchDto {
+
     private int branchId;
 
     private String branchName;

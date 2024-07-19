@@ -2,12 +2,20 @@ package com.app.Dao;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.CallableStatementCallback;
+import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
+
+import com.app.Entity.BankBranch;
+import com.app.Entity.Transaction;
+import com.app.Entity.TrscType;
 
 @Repository
 public class ProcedureRepo {
@@ -15,18 +23,10 @@ public class ProcedureRepo {
  @Autowired
  private JdbcTemplate jdbcTemplate;
 
- private SimpleJdbcCall getCustomer;
+ @Autowired
+ private CustomerRepo custRepo;
 
-//  @PostConstruct
-//  public void init()
-//  {
-//      getCustomer = new SimpleJdbcCall(jdbcTemplate)
-//              .withProcedureName("getcustomer"
-//              .declareParameters(
-//                   new SqlParameter("trsc_id", Types.INTEGER),
-//                   new SqlOutParameter("customer_id", Types.INTEGER)
-//              ));
-//  }
+
 
 //  public Customer getCustomerByTransaction
 
@@ -41,4 +41,59 @@ public class ProcedureRepo {
         });
     }
 
+    public Transaction getTransaction(int trscId)
+     {
+        return jdbcTemplate.execute("Call gettransaction(?)",
+          (CallableStatementCallback<Transaction>) cs -> {
+             cs.setInt(1, trscId);
+             cs.execute();
+             Transaction transaction = new Transaction();
+             
+             try(ResultSet rs = cs.getResultSet())
+             {
+                if(rs.next())
+                {
+                             transaction.setTrscId(rs.getInt("trsc_id"));
+                            transaction.setAmount(rs.getDouble("amount"));
+                            transaction.setTime((rs.getTimestamp("time")).toLocalDateTime());
+                            transaction.setType(TrscType.valueOf(rs.getString("type")));
+                           
+        
+                        }else
+                {
+                    return null;
+                }
+             }
+
+             return transaction;
+          });
+     }
+
+     public List<BankBranch> getBranchList() {
+        return jdbcTemplate.execute(
+            (CallableStatementCreator) connection -> {
+                CallableStatement cs = connection.prepareCall("call getAllBranches()");
+                return cs;
+            },
+            (CallableStatementCallback<List<BankBranch>>) cs -> {
+                List<BankBranch> branches = new ArrayList<>();
+                boolean hasResultSet = cs.execute();
+                if (hasResultSet) {
+                    try (ResultSet rs = cs.getResultSet()) {
+                        while (rs.next()) {
+                            BankBranch branch = new BankBranch();
+                            branch.setBranchId(rs.getInt("branch_id"));
+                            branch.setBranchName(rs.getString("branch_name"));
+                            branch.setAddress(rs.getString("address"));
+                            branch.setEmpNo(rs.getInt("emp_no"));
+                            branch.setPhoneNumber(rs.getString("phone_number"));
+                            branch.setEmail(rs.getString("email"));
+                            branches.add(branch);
+                        }
+                    }
+                }
+                return branches;
+            }
+        );
+    }
 }

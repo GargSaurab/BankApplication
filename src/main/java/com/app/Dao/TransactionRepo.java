@@ -18,7 +18,10 @@ public interface TransactionRepo extends JpaRepository<Transaction,Integer>{
 
      //Calling the procedure stored in database
      @Procedure( "getcustomer")
-     int getcustomer(@Param("transaction_id") int transactionId);
+     int getcustomer(@Param("transaction_id") Integer transactionId);
+
+     @Procedure("get_by_transactionid")
+     List<Transaction> getTransaction(@Param("transaction_id") int transactionId);
 }
 
 /*

@@ -21,4 +21,6 @@ public interface TransactionService {
 
    public CustomerDto getCustomerByTransaction(int id);
 
+   public TransactionDto getTransaction(int id);
+
 }

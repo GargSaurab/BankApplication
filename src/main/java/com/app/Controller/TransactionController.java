@@ -157,4 +157,31 @@ public class TransactionController {
  
      }
 
+      
+     @PreAuthorize("hasRole('EMP')")
+     @PostMapping("/getTrsc")
+     public ResponseEntity<?> getTransaction(@RequestParam int id) {
+ 
+         CommonResponse response = new CommonResponse();
+
+         logger.info("In the getTrsc in controller");
+ 
+         try {
+             TransactionDto transaction = trscSrv.getTransaction(id);
+ 
+             response.info.code = StatusCode.Success;
+             response.info.message = "Success";
+             response.data = transaction;
+             return ResponseEntity.ok(response);
+             
+         } catch (ResourceNotFoundException re) {
+             throw re;
+         }
+         catch(Exception e)
+         {
+             throw e;
+         }
+ 
+     }
+
 }

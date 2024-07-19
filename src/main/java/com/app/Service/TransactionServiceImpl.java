@@ -46,7 +46,7 @@ public class TransactionServiceImpl implements TransactionService {
     public void withdraw(User user) {
 
         Customer customer = custRep.findById(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not  found"));// fetching customer  from
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not  found"));// fetching customer from
                                                                                          // database to match the pin
                                                                                          // and deduct the amount
 
@@ -55,10 +55,10 @@ public class TransactionServiceImpl implements TransactionService {
             throw new InvalidInputException("Invalid Pin");
         }
 
-        double balance = customer.getBalance(); 
+        double balance = customer.getBalance();
         double amount = user.getAmount();
 
-         // if amount is greater then balance throws insufficient balance
+        // if amount is greater then balance throws insufficient balance
         if (balance < amount) {
             throw new InvalidInputException("Insufficient Balance");
         }
@@ -67,21 +67,21 @@ public class TransactionServiceImpl implements TransactionService {
 
         custRep.save(customer); // saving the updated customer data
 
-
-        
         // Loging the transaction
-        Transaction newTransaction = new Transaction(user.getAmount(),TrscType.WITHDRAWAL,customer,null);
+        Transaction newTransaction = new Transaction(user.getAmount(), TrscType.WITHDRAWAL, customer, null);
 
         trscRep.save(newTransaction);
 
     }
 
-    // Deposits the money in 
+    // Deposits the money in
     @Override
     public void deposit(User user) {
 
         Customer customer = custRep.findById(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not  found")); // fetching customer from database to match the pin and add the amount
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not  found")); // fetching customer from
+                                                                                          // database to match the pin
+                                                                                          // and add the amount
 
         // checks pin given by user
         if (customer.getPin() != (user.getPin())) {
@@ -95,9 +95,8 @@ public class TransactionServiceImpl implements TransactionService {
 
         custRep.save(customer);// saving the updated customer data
 
-
         // Loging the transaction
-        Transaction newTransaction = new Transaction(user.getAmount(),TrscType.DEPOSIT,customer,null);
+        Transaction newTransaction = new Transaction(user.getAmount(), TrscType.DEPOSIT, customer, null);
 
         trscRep.save(newTransaction);
 
@@ -111,9 +110,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not  found")); // fetching customer from
                                                                                           // database
 
-        return trscRep.findAllByCustomer(customer)
-                .stream()
-                .map(trsc -> mapper.map(trsc, TransactionDto.class))
+        return trscRep.findAllByCustomer(customer).stream().map(trsc -> mapper.map(trsc, TransactionDto.class))
                 .collect(Collectors.toList());
 
     }
@@ -154,14 +151,14 @@ public class TransactionServiceImpl implements TransactionService {
         custRep.save(recipient);
 
         // logging the new transaction
-        Transaction transaction1 = new Transaction(user.getAmount(),TrscType.TRANSFER_CREDIT,sender,recipient);
+        Transaction transaction1 = new Transaction(user.getAmount(), TrscType.TRANSFER_CREDIT, sender, recipient);
 
         trscRep.save(transaction1);
 
-        Transaction transaction2 = new Transaction(user.getAmount(),TrscType.TRANSFER_DEBIT,recipient,sender);
+        Transaction transaction2 = new Transaction(user.getAmount(), TrscType.TRANSFER_DEBIT, recipient, sender);
 
         trscRep.save(transaction2);
-        
+
     }
 
     // Fetching the customer data who made the transaction
@@ -169,21 +166,35 @@ public class TransactionServiceImpl implements TransactionService {
     public CustomerDto getCustomerByTransaction(int id) {
 
         logger.info("In the getCustomerByTrsc in service");
-      
-    //    int custId = trscRep.getcustomer(id);
 
-       int custId = prRep.getCustomer(id);
+        // int custId = trscRep.getcustomer(id);
 
-       logger.info("ID => {}",custId);
+        int custId = prRep.getCustomer(id);
 
-       Customer customer = custRep.findById(custId)
-              .orElseThrow(() -> new ResourceNotFoundException("Some error occured!"));
+        logger.info("ID => {}", custId);
 
-       logger.info("Customer : {}", customer);
+        Customer customer = custRep.findById(custId)
+                .orElseThrow(() -> new ResourceNotFoundException("Some error occured!"));
 
-       return mapper.map(customer, CustomerDto.class);
+        logger.info("Customer : {}", customer);
+
+        return mapper.map(customer, CustomerDto.class);
     }
 
-    
+    @Override
+    public TransactionDto getTransaction(int id) {
+
+        logger.info("In the getTrsc in service");
+
+        Transaction transaction = prRep.getTransaction(id);
+
+        if (transaction != null) {
+
+            logger.info("Transaction => {}", transaction);
+            return mapper.map(transaction, TransactionDto.class);
+        } else {
+            throw new ResourceNotFoundException("Some error occured!");
+        }
+    }
 
 }
