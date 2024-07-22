@@ -5,10 +5,14 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.security.SecureRandom;
-import java.util.Random;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpSession;
 
+@Service
 public class CaptchaServiceImpl implements CaptchaService{
 
     private static final String[] fonts = {
@@ -18,6 +22,8 @@ public class CaptchaServiceImpl implements CaptchaService{
     };
 
     private static final String alphaNumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+public Logger logger = LoggerFactory.getLogger(CaptchaServiceImpl.class);
 
     @Override
     public BufferedImage getCaptcha(HttpSession session) {
@@ -40,9 +46,14 @@ public class CaptchaServiceImpl implements CaptchaService{
         g.setColor(Color.WHITE); // Applied on All subsequent drawing operations until another
         //  setColor is applied.
         g.fillRect(0, 0, width, height);
-        g.setFont(new Font("Arial", Font.BOLD, 40)); // All subsequent drawing operations, like drawing text or shapes, will use black color.
+        g.setFont(new Font("Courier New", Font.ITALIC, 40)); // All subsequent drawing operations, like drawing text or shapes, will use black color.
         g.setColor(Color.black);
-        g.drawString(captchaVal, max, height);
+
+        //Centers the CAPTCHA text horizontally and vertically within the image.
+        int x = (width - g.getFontMetrics().stringWidth(captchaVal)) / 2;
+        int y = (height + g.getFontMetrics().getAscent()) / 2;
+
+        g.drawString(captchaVal, x, y);
         g.dispose();
 
         return captcha ;
@@ -82,5 +93,4 @@ public class CaptchaServiceImpl implements CaptchaService{
 
 // Graphics is an abstract class provided by Java AWT which is used to draw or paint on the 
 // components. It consists of various fields which hold information like components to be 
-//painted, font, color, XOR mode, etc., and methods that allow drawing various shapes on the GUI 
-// components.
+//painted, font, color, XOR mode, etc., and methods that allow drawing various shapes on the GUI components.
