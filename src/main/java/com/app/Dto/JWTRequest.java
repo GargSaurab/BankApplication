@@ -13,6 +13,6 @@ public class JWTRequest {
 
     private String name;
     private String password;
-    private String clientCaptcha;
+    private String captcha;
 
 }

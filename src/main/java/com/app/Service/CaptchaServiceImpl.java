@@ -2,26 +2,26 @@ package com.app.Service;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.security.SecureRandom;
+import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import com.app.CustomException.InvalidInputException;
 
 import jakarta.servlet.http.HttpSession;
 
 @Service
 public class CaptchaServiceImpl implements CaptchaService {
 
-    private static final String[] fonts = {
-            "Courier New", "Comic Sans MS", "Lucida Console",
-            "Brush Script MT", "Algerian", "Chiller",
-            "Papyrus", "Impact", "Kristen ITC", "Stencil"
-    };
+    private static final String[] fonts = { "Jokerman", "Showcard Gothic", "Brush Script MT", "Mistral", "Rage Italic",
+            "Chiller", "Papyrus", "Viner Hand ITC", "Harlow Solid Italic", "Blackadder ITC" };
 
-    private static final String alphaNumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final String alphaNumeric = "a1B2c3D4e5F6g7H8i9J1k2Lm3No4P5q6Rs7Tu8V9w0XyZ1Ab2Cd3Ef4Gh5Ij6Kl7Mn8Op9Qr0StU1v2Wx3Yz";
 
     public Logger logger = LoggerFactory.getLogger(CaptchaServiceImpl.class);
 
@@ -36,18 +36,28 @@ public class CaptchaServiceImpl implements CaptchaService {
         // Saves the captcha in the client's session
         session.setAttribute("captcha", captchaVal);
 
-         // gets a random font each time
-         String font = fonts[new SecureRandom().nextInt(fonts.length)];
+        // gets a random font each time
+        String font = fonts[new SecureRandom().nextInt(fonts.length)];
+
+        logger.info(font);
 
         int width = 200;
         int height = 100;
 
         BufferedImage captcha = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
-        Graphics g = captcha.getGraphics();
+        Graphics2D g = captcha.createGraphics();
         g.setColor(Color.WHITE); // Applied on All subsequent drawing operations until another
         // setColor is applied.
         g.fillRect(0, 0, width, height);
+
+        // puts random lines in the captcha
+        g.setColor(Color.RED); 
+        for (int i = 0; i < 10; i++) {
+            g.drawLine(new Random().nextInt(width), new Random().nextInt(height), new Random().nextInt(width),
+                    new Random().nextInt(height));
+        }
+
         g.setFont(new Font(font, Font.ITALIC, 40)); // All subsequent drawing operations, like drawing text or shapes,
                                                     // will use black color.
         g.setColor(Color.black);
@@ -82,6 +92,12 @@ public class CaptchaServiceImpl implements CaptchaService {
     @Override
     public void validateCaptcha(HttpSession session, String captcha) {
 
+        logger.info(captcha);
+         
+         if(!session.getAttribute("captcha").equals(captcha))
+           {
+             throw new InvalidInputException("Wrong Captcha");
+           }
     }
 
 }
