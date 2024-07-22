@@ -55,7 +55,7 @@ public class AuthController {
 
      HttpSession session = rq.getSession();
 
-      cpSrv.validateCaptcha(rq, request.getClientCaptcha());
+      cpSrv.validateCaptcha(session, request.getCaptcha());
 
       this.doAuthenticate(request.getName(), request.getPassword());
 
