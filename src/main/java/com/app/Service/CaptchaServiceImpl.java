@@ -1,23 +1,35 @@
 package com.app.Service;
 
-import java.awt.image.BufferedImage;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.security.SecureRandom;
 import java.util.Random;
+
+import jakarta.servlet.http.HttpSession;
 
 public class CaptchaServiceImpl implements CaptchaService{
 
+    private static final String[] fonts = {
+        "Courier New", "Comic Sans MS", "Lucida Console", 
+        "Brush Script MT", "Algerian", "Chiller", 
+        "Papyrus", "Impact", "Kristen ITC", "Stencil"
+    };
+
+    private static final String alphaNumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
     @Override
-    public BufferedImage getCaptcha() {
+    public BufferedImage getCaptcha(HttpSession session) {
 
-        int min = 100000;
-        int max = 999999;
+        // gets a random alphanumeric captcha
+        String captchaVal = randomizeCaptcha();
 
-        Random random = new Random();
-        int captchaVal = random.nextInt(max - min + 1) + min;
-        String captchaString = String.valueOf(captchaVal);
-        
+       // gets a random font each time
+       String font = fonts[new SecureRandom().nextInt(fonts.length)];
+
+       //Saves the captcha in the client's session
+       session.setAttribute("captcha", captchaVal);     
         
         int width = 200;
         int height = 100;
@@ -30,11 +42,35 @@ public class CaptchaServiceImpl implements CaptchaService{
         g.fillRect(0, 0, width, height);
         g.setFont(new Font("Arial", Font.BOLD, 40)); // All subsequent drawing operations, like drawing text or shapes, will use black color.
         g.setColor(Color.black);
-        g.drawString(captchaString, max, height);
+        g.drawString(captchaVal, max, height);
         g.dispose();
 
         return captcha ;
        
+    }
+
+    public String randomizeCaptcha()
+    {
+        StringBuilder str = new StringBuilder(6);
+
+        SecureRandom random = new SecureRandom();
+        
+        int max = alphaNumeric.length() - 1;
+
+        for(int i = 0; i < 6; i++)
+        {
+            int index = random.nextInt(max);
+
+            str.append(alphaNumeric.charAt(index));
+        }
+
+        return str.toString();
+    }
+
+    @Override
+    public  void validateCaptcha(HttpSession session, String captcha)
+    {
+         
     }
 
 }

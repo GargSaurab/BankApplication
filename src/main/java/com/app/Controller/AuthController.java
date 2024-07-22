@@ -27,6 +27,9 @@ import com.app.Dto.JWTResponse;
 import com.app.Security.JwtHelper;
 import com.app.Service.CaptchaService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -46,9 +49,13 @@ public class AuthController {
    private Logger logger = LoggerFactory.getLogger(AuthController.class);
 
    @PostMapping("/login")
-   public ResponseEntity<?> login(@RequestBody JWTRequest request) {
+   public ResponseEntity<?> login(@RequestBody JWTRequest request, HttpServletRequest rq) {
 
       logger.info("login -> Name: {}, Password: {}", request.getName(), request.getPassword());
+
+     HttpSession session = rq.getSession();
+
+      cpSrv.validateCaptcha(rq, request.getClientCaptcha());
 
       this.doAuthenticate(request.getName(), request.getPassword());
 
@@ -65,11 +72,13 @@ public class AuthController {
    }
 
    @GetMapping("/captcha")
-   public ResponseEntity<?> captcha() throws Exception {
+   public ResponseEntity<?> captcha(HttpServletRequest request) throws Exception {
 
       try {
 
-         BufferedImage captcha = cpSrv.getCaptcha();
+         HttpSession session = request.getSession();
+
+         BufferedImage captcha = cpSrv.getCaptcha(session);
 
          ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
