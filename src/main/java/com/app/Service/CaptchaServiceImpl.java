@@ -31,7 +31,7 @@ public class CaptchaServiceImpl implements CaptchaService {
     private static final String[] fonts = { "Jokerman", "Showcard Gothic", "Brush Script MT", "Mistral", "Rage Italic",
             "Chiller", "Papyrus", "Viner Hand ITC", "Harlow Solid Italic", "Blackadder ITC" };
 
-    //  String to get random 6 character captcha
+    // String to get random 6 character captcha
     private static final String alphaNumeric = "a1B2c3D4e5F6g7H8i9J1k2Lm3No4P5q6Rs7Tu8V9w0XyZ1Ab2Cd3Ef4Gh5Ij6Kl7Mn8Op9Qr0StU1v2Wx3Yz";
 
     public Logger logger = LoggerFactory.getLogger(CaptchaServiceImpl.class);
@@ -39,7 +39,7 @@ public class CaptchaServiceImpl implements CaptchaService {
     @Override
     public ImmutablePair<String, BufferedImage> getCaptcha() {
 
-        //  Id for captcha to easily retrieval from cache
+        // Id for captcha to easily retrieval from cache
         String captchaId = UUID.randomUUID().toString();
 
         // gets a random alphanumeric captcha
@@ -48,7 +48,7 @@ public class CaptchaServiceImpl implements CaptchaService {
         logger.info(captchaVal);
 
         // Saves the captcha in the client's session
-        redisTemplate.opsForValue().set(captchaId, captchaVal, 60, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set("25", captchaVal, 60, TimeUnit.SECONDS);
 
         // gets a random font each time
         String font = fonts[new SecureRandom().nextInt(fonts.length)];
@@ -66,7 +66,7 @@ public class CaptchaServiceImpl implements CaptchaService {
         g.fillRect(0, 0, width, height);
 
         // puts random lines in the captcha
-        g.setColor(Color.RED); 
+        g.setColor(Color.RED);
         for (int i = 0; i < 10; i++) {
             g.drawLine(new Random().nextInt(width), new Random().nextInt(height), new Random().nextInt(width),
                     new Random().nextInt(height));
@@ -83,8 +83,9 @@ public class CaptchaServiceImpl implements CaptchaService {
         g.drawString(captchaVal, x, y);
         g.dispose();
 
-        // ImmutablePair class from Apache Commons Lang is a utility class designed to hold a pair of related objects.
-        return new ImmutablePair<>(captchaId, captcha);
+        // ImmutablePair class from Apache Commons Lang is a utility class designed to
+        // hold a pair of related objects.
+        return new ImmutablePair<>("25", captcha);
 
     }
 
@@ -105,14 +106,21 @@ public class CaptchaServiceImpl implements CaptchaService {
     }
 
     @Override
-    public void validateCaptcha(HttpSession session, String captcha) {
+    public void validateCaptcha(String captchaId, String captcha) {
 
         logger.info(captcha);
-         
-         if(!session.getAttribute("captcha").equals(captcha))
-           {
-             throw new InvalidInputException("Wrong Captcha");
-           }
+
+        // fetches captcha from cache
+        String storedCaptcha = (String) redisTemplate.opsForValue().get(captchaId);
+       
+        //comparing cached Captcha and input captcha
+        if (storedCaptcha != null && storedCaptcha.equals(captcha)) {
+            //After captcha validation stored captcha is not of any
+            redisTemplate.delete(captchaId);
+            return;
+        }
+
+        throw new InvalidInputException("Wrong Captcha");
     }
 
 }
