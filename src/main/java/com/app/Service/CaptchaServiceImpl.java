@@ -6,9 +6,14 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.security.SecureRandom;
 import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.app.CustomException.InvalidInputException;
@@ -18,15 +23,24 @@ import jakarta.servlet.http.HttpSession;
 @Service
 public class CaptchaServiceImpl implements CaptchaService {
 
+    // To store the captcha in in-memory distributed cache via Redis
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    // Array of fonts which is used to select a random font
     private static final String[] fonts = { "Jokerman", "Showcard Gothic", "Brush Script MT", "Mistral", "Rage Italic",
             "Chiller", "Papyrus", "Viner Hand ITC", "Harlow Solid Italic", "Blackadder ITC" };
 
+    //  String to get random 6 character captcha
     private static final String alphaNumeric = "a1B2c3D4e5F6g7H8i9J1k2Lm3No4P5q6Rs7Tu8V9w0XyZ1Ab2Cd3Ef4Gh5Ij6Kl7Mn8Op9Qr0StU1v2Wx3Yz";
 
     public Logger logger = LoggerFactory.getLogger(CaptchaServiceImpl.class);
 
     @Override
-    public BufferedImage getCaptcha(HttpSession session) {
+    public ImmutablePair<String, BufferedImage> getCaptcha() {
+
+        //  Id for captcha to easily retrieval from cache
+        String captchaId = UUID.randomUUID().toString();
 
         // gets a random alphanumeric captcha
         String captchaVal = randomizeCaptcha();
@@ -34,7 +48,7 @@ public class CaptchaServiceImpl implements CaptchaService {
         logger.info(captchaVal);
 
         // Saves the captcha in the client's session
-        session.setAttribute("captcha", captchaVal);
+        redisTemplate.opsForValue().set(captchaId, captchaVal, 60, TimeUnit.SECONDS);
 
         // gets a random font each time
         String font = fonts[new SecureRandom().nextInt(fonts.length)];
@@ -69,7 +83,8 @@ public class CaptchaServiceImpl implements CaptchaService {
         g.drawString(captchaVal, x, y);
         g.dispose();
 
-        return captcha;
+        // ImmutablePair class from Apache Commons Lang is a utility class designed to hold a pair of related objects.
+        return new ImmutablePair<>(captchaId, captcha);
 
     }
 

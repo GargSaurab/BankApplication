@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,21 +73,23 @@ public class AuthController {
    }
 
    @GetMapping("/captcha")
-   public ResponseEntity<?> captcha(HttpServletRequest request) throws Exception {
+   public ResponseEntity<?> captcha() throws Exception {
 
       try {
 
-         HttpSession session = request.getSession();
+         ImmutablePair<String, BufferedImage> captcha = cpSrv.getCaptcha();
 
-         BufferedImage captcha = cpSrv.getCaptcha(session);
+         String captchId = captcha.left;
+         BufferedImage catchaImage = captcha.right;
 
          ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-         ImageIO.write(captcha, "png", baos);
+         ImageIO.write(catchaImage, "png", baos);
          byte[] imageBytes = baos.toByteArray();
 
          HttpHeaders headers = new HttpHeaders();
          headers.set(HttpHeaders.CONTENT_TYPE, "image/png");
+         headers.add("captchaId", captchId);
 
          return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
 
