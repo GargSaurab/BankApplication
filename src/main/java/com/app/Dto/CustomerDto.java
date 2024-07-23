@@ -10,4 +10,5 @@ public class CustomerDto {
     private String name;
     private double balance;
     private String address;
+    private String role;
 }

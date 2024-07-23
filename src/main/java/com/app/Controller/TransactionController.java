@@ -2,10 +2,13 @@ package com.app.Controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.CustomException.InvalidInputException;
 import com.app.CustomException.ResourceNotFoundException;
 import com.app.Dto.CommonResponse;
+import com.app.Dto.CustomerDto;
 import com.app.Dto.StatusCode;
 import com.app.Dto.TransactionDto;
 import com.app.Dto.User;
@@ -27,6 +31,8 @@ public class TransactionController {
 
     @Autowired
     private TransactionService trscSrv;
+
+    private Logger logger = LoggerFactory.getLogger(TransactionController.class);
 
     // using json to get the data securely from the user
     // Withdraw's money
@@ -80,7 +86,7 @@ public class TransactionController {
     }
 
     // returns list off all transactions done by a customer
-    @PreAuthorize("hasRole('EMP')")
+    @PreAuthorize("hasRole('ROLE_EMP')")
     @GetMapping("/transactions")
     public ResponseEntity<?> listAllTransactions(@RequestParam int id) {
 
@@ -123,5 +129,59 @@ public class TransactionController {
       
         }
     }
+
+     
+     @PreAuthorize("hasRole('EMP')")
+     @PostMapping("/getCustomerbyTrsc")
+     public ResponseEntity<?> getCustomerByTransaction(@RequestParam int id) {
+ 
+         CommonResponse response = new CommonResponse();
+
+         logger.info("In the getCustomerByTrsc in controller");
+ 
+         try {
+             CustomerDto customer = trscSrv.getCustomerByTransaction(id);
+ 
+             response.info.code = StatusCode.Success;
+             response.info.message = "Success";
+             response.data = customer;
+             return ResponseEntity.ok(response);
+             
+         } catch (ResourceNotFoundException re) {
+             throw re;
+         }
+         catch(Exception e)
+         {
+             throw e;
+         }
+ 
+     }
+
+      
+     @PreAuthorize("hasRole('EMP')")
+     @PostMapping("/getTrsc")
+     public ResponseEntity<?> getTransaction(@RequestParam int id) {
+ 
+         CommonResponse response = new CommonResponse();
+
+         logger.info("In the getTrsc in controller");
+ 
+         try {
+             TransactionDto transaction = trscSrv.getTransaction(id);
+ 
+             response.info.code = StatusCode.Success;
+             response.info.message = "Success";
+             response.data = transaction;
+             return ResponseEntity.ok(response);
+             
+         } catch (ResourceNotFoundException re) {
+             throw re;
+         }
+         catch(Exception e)
+         {
+             throw e;
+         }
+ 
+     }
 
 }

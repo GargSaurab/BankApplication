@@ -3,6 +3,7 @@ package com.app.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,7 +27,7 @@ public class CustomerController {
    private CustomerService custSrv;
 
    // Adding Customer to database
-   @Secured("EMP")
+   @PreAuthorize("hasRole('ROLE_EMP')")
    @PostMapping("/add")
    public ResponseEntity<?> addCustomer(@RequestBody CustomerDto customer) {
 
@@ -48,7 +49,7 @@ public class CustomerController {
    }
 
    // setting pin given by customer
-   @Secured("CUST")
+   @PreAuthorize("hasRole('ROLE_CUST')")
    @PutMapping("/setPin")
    public ResponseEntity<?> setPin(@RequestBody User user) {
 
@@ -73,7 +74,7 @@ public class CustomerController {
       }
    }
 
-   @Secured("CUST")
+   @PreAuthorize("hasRole('ROLE_CUST')")
    @PutMapping("/setPass")
    public ResponseEntity<?> setPassword(@RequestBody User user) {
 
@@ -97,7 +98,7 @@ public class CustomerController {
    }
 
    // Employee can fetch list of all the customers
-   @Secured("EMP")
+   @PreAuthorize("hasRole('ROLE_CUST')")
    @GetMapping("/listcustomers")
    public ResponseEntity<?> listAllCustomers() {
 
@@ -118,7 +119,7 @@ public class CustomerController {
    }
 
    // Customer can get info about themselve
-   @Secured("CUST")
+   @PreAuthorize("hasRole('ROLE_CUST')")
    @PostMapping("/customerbyid")
    public ResponseEntity<?> getCustomerById(@RequestBody User user) {
        

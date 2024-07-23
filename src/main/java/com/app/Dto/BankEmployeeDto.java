@@ -12,5 +12,6 @@ public class BankEmployeeDto {
     private int empId;
     private String name;
     private JobTitle jobTitle;
-
+    private String role;
+    
 }

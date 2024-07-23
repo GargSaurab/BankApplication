@@ -61,9 +61,10 @@ public class SecurityFilterChainConfig {
                 logger.info("Security filter chain => {} ", http.toString());
 
                 http.csrf(csrf -> csrf.disable())
-                                .authorizeHttpRequests(request -> request.requestMatchers("/auth/login").permitAll()
+                                .authorizeHttpRequests(request -> request.requestMatchers("/auth/**").permitAll()
+                                  .requestMatchers("/employee/add").permitAll()
                                                 .requestMatchers("/transaction").hasRole("CUST")
-                                                .requestMatchers("/employee").hasRole("EMP").anyRequest()
+                                                .requestMatchers("/employee/**").hasRole("EMP").anyRequest()
                                                 .authenticated())
                                 .exceptionHandling(ex -> ex.authenticationEntryPoint(point))
                                 .sessionManagement(session -> session
