@@ -18,8 +18,6 @@ import org.springframework.stereotype.Service;
 
 import com.app.CustomException.InvalidInputException;
 
-import jakarta.servlet.http.HttpSession;
-
 @Service
 public class CaptchaServiceImpl implements CaptchaService {
 
@@ -48,7 +46,7 @@ public class CaptchaServiceImpl implements CaptchaService {
         logger.info(captchaVal);
 
         // Saves the captcha in the client's session
-        redisTemplate.opsForValue().set("25", captchaVal, 60, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(captchaId, captchaVal, 60, TimeUnit.SECONDS);
 
         // gets a random font each time
         String font = fonts[new SecureRandom().nextInt(fonts.length)];
@@ -80,15 +78,17 @@ public class CaptchaServiceImpl implements CaptchaService {
         int x = (width - g.getFontMetrics().stringWidth(captchaVal)) / 2;
         int y = (height + g.getFontMetrics().getAscent()) / 2;
 
+        // With this method captchaVal will be drawn on Image
         g.drawString(captchaVal, x, y);
         g.dispose();
 
         // ImmutablePair class from Apache Commons Lang is a utility class designed to
         // hold a pair of related objects.
-        return new ImmutablePair<>("25", captcha);
+        return new ImmutablePair<>(captchaId, captcha);
 
     }
 
+    // Generates the captcha by randomly picking characters from alphaNueric
     public String randomizeCaptcha() {
         StringBuilder str = new StringBuilder(6);
 
