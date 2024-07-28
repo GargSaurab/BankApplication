@@ -1,8 +1,8 @@
 package com.app.config;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -19,19 +19,16 @@ import com.app.filter.JWTAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
+@RequiredArgsConstructor // Constructor Injection
 public class SecurityFilterChainConfig {
 
-        @Autowired
-        private JWTAuthenticationEntryPoint point;
+        private final JWTAuthenticationEntryPoint point;
 
-        @Autowired
-        private JWTAuthenticationFilter filter;
+        private final JWTAuthenticationFilter filter;
 
-        @Autowired
-        private UserDetailsService userDetailsService;
+        private final UserDetailsService userDetailsService;
 
-        @Autowired
-        private PasswordEncoder passwordEncoder;
+        private final PasswordEncoder passwordEncoder;
 
         private Logger logger = LoggerFactory.getLogger(SecurityFilterChainConfig.class);
 

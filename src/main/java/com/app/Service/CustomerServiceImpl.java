@@ -3,8 +3,8 @@ package com.app.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +19,14 @@ import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor // Constructor Injection
 public class CustomerServiceImpl implements CustomerService{
-    
-    @Autowired
-    private CustomerRepo custRep;
-    
-    @Autowired
-    private ModelMapper mapper;
-    
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
+    private final CustomerRepo custRep;
+
+    private final ModelMapper mapper;
+
+    private final PasswordEncoder passwordEncoder;
 
     //adding customer
     @Override

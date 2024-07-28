@@ -2,9 +2,9 @@ package com.app.filter;
 
 import java.io.IOException;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,15 +23,14 @@ import jakarta.servlet.http.HttpServletResponse;
 
 //To check the token that is comming in header once per request
 @Component
+@RequiredArgsConstructor // Constructor Injection
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private Logger logger = LoggerFactory.getLogger(OncePerRequestFilter.class);
 
-    @Autowired
-    private JwtHelper jwtHelper;
+    private final JwtHelper jwtHelper;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

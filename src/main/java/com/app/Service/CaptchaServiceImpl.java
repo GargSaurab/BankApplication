@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +20,11 @@ import org.springframework.stereotype.Service;
 import com.app.CustomException.InvalidInputException;
 
 @Service
+@RequiredArgsConstructor // Constructor Injection
 public class CaptchaServiceImpl implements CaptchaService {
 
     // To store the captcha in in-memory distributed cache via Redis
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     // Array of fonts which is used to select a random font
     private static final String[] fonts = { "Jokerman", "Showcard Gothic", "Brush Script MT", "Mistral", "Rage Italic",

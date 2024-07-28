@@ -2,7 +2,7 @@ package com.app.Controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,10 +22,10 @@ import com.app.Service.BankEmployeeService;
 
 @RestController
 @RequestMapping("/employee")
+@RequiredArgsConstructor // Costructor Injection
 public class EmployeeController {
 
-    @Autowired
-    public BankEmployeeService beSrv;
+    public final BankEmployeeService beSrv;
 
     @PostMapping("/add")
     public ResponseEntity<?> addEmployee(@RequestBody BankEmployeeDto empDto) {

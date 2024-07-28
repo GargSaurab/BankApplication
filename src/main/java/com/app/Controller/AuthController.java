@@ -5,10 +5,11 @@ import java.io.ByteArrayOutputStream;
 
 import javax.imageio.ImageIO;
 
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,24 +31,21 @@ import com.app.Service.CaptchaService;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor // Constructor Injection
 public class AuthController {
 
-   @Autowired
-   private UserDetailsService userDetailsService;
+   private final UserDetailsService userDetailsService;
 
-   @Autowired
-   private CaptchaService cpSrv;
+   private final CaptchaService cpSrv;
 
-   @Autowired
-   private AuthenticationManager manager;
+   private final AuthenticationManager manager;
 
-   @Autowired
-   private JwtHelper helper;
+   private final JwtHelper helper;
 
    private Logger logger = LoggerFactory.getLogger(AuthController.class);
 
    @PostMapping("/login")
-   public ResponseEntity<?> login(@RequestBody JWTRequest request) {
+   public ResponseEntity<?> login(@RequestBody @NotNull JWTRequest request) {
 
       logger.info("login -> Name: {}, Password: {}", request.getName(), request.getPassword());
 

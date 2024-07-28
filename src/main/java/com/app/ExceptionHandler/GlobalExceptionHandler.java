@@ -13,13 +13,13 @@ import com.app.Dto.StatusCode;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    @Autowired
-    private CommonResponse response;
    
     //ResourceNotFoundException
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> handlerResourceNotFoundException(ResourceNotFoundException e) {
+
+        CommonResponse response = new CommonResponse();
+
         System.out.println("Resource not found in" + e);
 
         response.info.code = StatusCode.server_Error;
@@ -30,6 +30,9 @@ public class GlobalExceptionHandler {
     //InvalidInputException
     @ExceptionHandler(InvalidInputException.class)
     public ResponseEntity<?> handlerInvalidInputException(InvalidInputException e) {
+
+        CommonResponse response = new CommonResponse();
+
         System.out.println("Invalid input in" + e.getMessage());
 
         response.info.code = StatusCode.bad_request;
@@ -41,17 +44,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> HandlerBadCredentialsException(BadCredentialsException e) {
 
+        CommonResponse response = new CommonResponse();
+
         response.info.code = StatusCode.bad_request;
         response.info.message = "Wrong Credentials";
         return ResponseEntity.ok(response);
     }
-    
+
     //Exception
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handlerException(Exception e) {
 
+        CommonResponse response = new CommonResponse();
+
         e.printStackTrace();
-    
+
         response.info.code = StatusCode.server_Error;
         response.info.message = "Some unexpected error occured! please try again.";
        return ResponseEntity.ok(response);

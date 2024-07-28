@@ -3,6 +3,7 @@ package com.app.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,19 +26,16 @@ import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor // Constructor Injection
 public class TransactionServiceImpl implements TransactionService {
 
-    @Autowired
-    private TransactionRepo trscRep;
+    private final TransactionRepo trscRep;
 
-    @Autowired
-    private CustomerRepo custRep;
+    private final CustomerRepo custRep;
 
-    @Autowired
-    private ProcedureRepo prRep;
+    private final ProcedureRepo prRep;
 
-    @Autowired
-    private ModelMapper mapper;
+    private final ModelMapper mapper;
 
     private Logger logger = LoggerFactory.getLogger(TransactionServiceImpl.class);
 

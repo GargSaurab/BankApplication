@@ -1,8 +1,8 @@
 package com.app.Service;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,13 +17,12 @@ import com.app.Entity.Customer;
 import com.app.Entity.CustomerDetails;
 
 @Service
+@RequiredArgsConstructor // Cosntructor Injcetion
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private CustomerRepo custRepo;
+    private final CustomerRepo custRepo;
 
-    @Autowired
-    private BankEmployeeRepo empRepo;
+    private final BankEmployeeRepo empRepo;
 
     private Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 

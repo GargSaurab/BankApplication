@@ -3,10 +3,10 @@ package com.app.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.app.CustomException.ResourceNotFoundException;
@@ -19,16 +19,14 @@ import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor // Constructor Injection
 public class BankBranchServiceImpl implements BankBranchService {
 
-    @Autowired
-    private BankBranchRepo brnchRep;
-    
-    @Autowired
-    private ProcedureRepo prRep;
+    private final BankBranchRepo brnchRep;
 
-    @Autowired
-    private ModelMapper mapper;
+    private final ProcedureRepo prRep;
+
+    private final ModelMapper mapper;
 
     Logger logger = LoggerFactory.getLogger(BankBranchServiceImpl.class);
 

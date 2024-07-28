@@ -3,8 +3,8 @@ package com.app.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,24 +18,20 @@ import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor // Constructor Injection
 public class BankEmployeeServiceImpl implements BankEmployeeService {
 
-    @Autowired
-    public BankEmployeeRepo beRep;
+    public final BankEmployeeRepo beRep;
 
-    @Autowired
-    public ModelMapper mapper;
-    
-    @Autowired
-    public PasswordEncoder passwordEncoder;
-    ;
+    public final ModelMapper mapper;
+
+    public final PasswordEncoder passwordEncoder;
 
     // New Employee added
     @Override
     public void addEmployee(BankEmployeeDto empDto) {
       
         BankEmployee employee = mapper.map(empDto, BankEmployee.class);
-
 
         employee.setJobTitle(empDto.getJobTitle());
 

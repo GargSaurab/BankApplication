@@ -2,7 +2,7 @@ package com.app.Controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,10 +18,10 @@ import com.app.Service.BankBranchService;
 
 @RestController
 @RequestMapping("/bankBranch")
+@RequiredArgsConstructor // Costructor Injection
 public class BankBranchController {
 
-    @Autowired
-    private BankBranchService brchSrv;
+    private final BankBranchService brchSrv;
  
     @PostMapping("/branch")
     public ResponseEntity<?> getBranch(@RequestParam int id)

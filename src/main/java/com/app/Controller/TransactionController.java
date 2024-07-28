@@ -2,9 +2,9 @@ package com.app.Controller;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,11 +26,11 @@ import com.app.Service.TransactionService;
 
 @RestController
 @RequestMapping("/transaction")
+@RequiredArgsConstructor // Constructor Injection
 // @CrossOrigin()
 public class TransactionController {
 
-    @Autowired
-    private TransactionService trscSrv;
+    private final TransactionService trscSrv;
 
     private Logger logger = LoggerFactory.getLogger(TransactionController.class);
 
