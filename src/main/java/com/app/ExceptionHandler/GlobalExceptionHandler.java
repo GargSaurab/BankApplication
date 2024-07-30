@@ -33,6 +33,7 @@ public class GlobalExceptionHandler {
 
         CommonResponse response = new CommonResponse();
 
+
         System.out.println("Invalid input in" + e.getMessage());
 
         response.info.code = StatusCode.bad_request;
